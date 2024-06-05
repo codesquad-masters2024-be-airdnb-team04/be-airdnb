@@ -1,6 +1,5 @@
 package com.airdnb.clone.domain.stay.entity;
 
-import com.airdnb.clone.domain.stay.entity.AvailableStatus;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import lombok.AccessLevel;
@@ -24,7 +23,7 @@ public class Stay {
     private LocalTime checkInTime;
     private LocalTime checkOutTime;
     private String roomType;
-    private AvailableStatus status;
+    private RoomStatus status;
     private String description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -41,7 +40,11 @@ public class Stay {
     @Builder.Default
     private Integer bathCount = 0;
 
-    public void changeAvailableStatus(AvailableStatus status) {
+    public void changeRoomStatus(RoomStatus status) {
         this.status = status;
+    }
+
+    public enum RoomStatus {
+        OPEN, REPAIR, CLOSE
     }
 }
