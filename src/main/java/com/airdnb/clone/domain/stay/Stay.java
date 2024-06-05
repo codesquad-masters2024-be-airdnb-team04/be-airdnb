@@ -23,7 +23,7 @@ public class Stay {
     private LocalTime checkInTime;
     private LocalTime checkOutTime;
     private String roomType;
-    private String available;
+    private AvailableStatus status;
     private String description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -40,4 +40,7 @@ public class Stay {
     @Builder.Default
     private Integer bathCount = 0;
 
+    public void changeAvailableStatus(AvailableStatus status) {
+        this.status = status;
+    }
 }
