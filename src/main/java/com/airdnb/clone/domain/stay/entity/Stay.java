@@ -27,21 +27,11 @@ public class Stay {
     private StayStatus status;
     private String description;
     private List<Amenity> amenities;
-    private List<StayImage> stayImages;
+    private List<StayImage> images;
+    private StayRoomInfo roomInfo;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    @Builder.Default
-    private Integer guestCount = 1;
-
-    @Builder.Default
-    private Integer bedroomCount = 0;
-
-    @Builder.Default
-    private Integer bedCount = 1;
-
-    @Builder.Default
-    private Integer bathCount = 0;
 
     public void changeStayStatus(StayStatus status) {
         this.status = status;
