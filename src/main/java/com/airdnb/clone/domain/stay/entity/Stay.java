@@ -23,9 +23,10 @@ public class Stay {
     private Integer cleaningFee;
     private LocalTime checkInTime;
     private LocalTime checkOutTime;
-    private String roomType;
-    private StayStatus status;
     private String description;
+    private StayFee fee;
+    private StayType type;
+    private StayStatus status;
     private List<Amenity> amenities;
     private List<StayImage> images;
     private StayRoomInfo roomInfo;
@@ -39,5 +40,9 @@ public class Stay {
 
     public enum StayStatus {
         OPEN, REPAIR, CLOSE
+    }
+
+    public enum StayType {
+        APARTMENT, ONE_ROOM, TWO_ROOM, HOSTEL, GUEST_HOUSE, COUNTRY_SIDE
     }
 }
