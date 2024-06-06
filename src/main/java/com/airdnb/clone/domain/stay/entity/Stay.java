@@ -19,8 +19,6 @@ public class Stay {
     private Long hostId;
     private String alias;
     private String location;
-    private Integer perNight;
-    private Integer cleaningFee;
     private LocalTime checkInTime;
     private LocalTime checkOutTime;
     private String description;
