@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class Stay {
 
@@ -27,7 +27,7 @@ public class Stay {
     private StayStatus status;
     private List<Amenity> amenities;
     private List<StayImage> images;
-    private StayRoomInfo roomInfo;
+    private RoomInformation roomInfo;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
