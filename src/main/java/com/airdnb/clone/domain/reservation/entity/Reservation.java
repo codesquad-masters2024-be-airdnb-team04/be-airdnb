@@ -22,6 +22,7 @@ public class Reservation extends BaseTimeEntity {
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
     private Long totalRate;
+    private Guest guests;
 
     @Builder.Default
     private Status status = Status.PENDING;
