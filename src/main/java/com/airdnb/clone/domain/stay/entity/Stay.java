@@ -71,7 +71,14 @@ public class Stay extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS")
     private Status status;
-    private List<Amenity> amenities;
+
+    @OneToMany(mappedBy = "stay", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<AvailableAmenity> amenities;
+
+    @ElementCollection
+    @CollectionTable(name = "STAY_IMAGE", joinColumns = {
+            @JoinColumn(name = "STAY_ID", foreignKey = @ForeignKey(name = "FK_STAY_IMAGE_ID")) // 중간 테이블이 가질 숙소 ID
+    })
     private List<StayImage> images;
 
     @Embedded
