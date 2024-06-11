@@ -34,7 +34,7 @@ public class AvailableAmenity {
     @JoinColumn(name = "STAY_ID", foreignKey = @ForeignKey(name = "FK_STAY_AVAILABLE_ID"))
     private Stay stay;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.�ALL)
     @JoinColumn(name = "AMENITY_ID", foreignKey = @ForeignKey(name = "FK_AMENITY_AVAILABLE_ID"))
     private Amenity amenity;
 
