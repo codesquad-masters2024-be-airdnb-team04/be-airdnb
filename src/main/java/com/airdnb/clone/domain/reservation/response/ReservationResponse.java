@@ -4,7 +4,7 @@ import com.airdnb.clone.domain.reservation.entity.Reservation;
 import java.time.LocalDateTime;
 
 public record ReservationResponse(
-        Long Id,
+        Long reservationId,
         Long memberId,
         Long stayId,
         LocalDateTime checkIn,

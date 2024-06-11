@@ -9,6 +9,7 @@ import com.airdnb.clone.domain.reservation.request.ReservationSaveRequest;
 import com.airdnb.clone.domain.reservation.entity.Reservation;
 import com.airdnb.clone.domain.stay.StayRepository;
 import com.airdnb.clone.domain.stay.entity.Stay;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,5 +45,11 @@ public class ReservationService {
         Reservation entity = reservationRepository.findById(request.reservationId())
                 .orElseThrow();
         entity.updateGuest(request.guestCount());
+    }
+
+    public List<ReservationResponse> findReservationsByMemberId(Long memberId) {
+        return reservationRepository.findAllByMemberId(memberId).stream()
+                .map(ReservationResponse::toDto)
+                .toList();
     }
 }
