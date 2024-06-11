@@ -41,7 +41,7 @@ public class Stay extends BaseTimeEntity {
     @Column(name = "STAY_ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "HOST_ID", foreignKey = @ForeignKey(name = "FK_MEMBER_STAY_ID"))
     private Member host;
 
