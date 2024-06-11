@@ -2,6 +2,7 @@ package com.airdnb.clone.domain.reservation;
 
 import com.airdnb.clone.domain.member.MemberRepository;
 import com.airdnb.clone.domain.member.entity.Member;
+import com.airdnb.clone.domain.reservation.request.ReservationDeleteRequest;
 import com.airdnb.clone.domain.reservation.response.ReservationResponse;
 import com.airdnb.clone.domain.reservation.request.ReservationSaveRequest;
 import com.airdnb.clone.domain.reservation.entity.Reservation;
@@ -30,5 +31,10 @@ public class ReservationService {
         Reservation entity = request.toEntity(member, stay);
         Reservation saved = reservationRepository.save(entity);
         return ReservationResponse.toDto(saved);
+    }
+
+    @Transactional
+    public void delete(ReservationDeleteRequest request) {
+        reservationRepository.deleteById(request.reservationId());
     }
 }

@@ -1,5 +1,6 @@
 package com.airdnb.clone.domain.reservation;
 
+import com.airdnb.clone.domain.reservation.request.ReservationDeleteRequest;
 import com.airdnb.clone.domain.reservation.response.ReservationResponse;
 import com.airdnb.clone.domain.reservation.request.ReservationSaveRequest;
 import lombok.RequiredArgsConstructor;
@@ -19,5 +20,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations")
-    public void deleteReservation()
+    public void deleteReservation(ReservationDeleteRequest request) {
+        reservationService.delete(request);
+    }
 }
