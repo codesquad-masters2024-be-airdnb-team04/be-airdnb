@@ -2,7 +2,7 @@ package com.airdnb.clone.domain.reservation.entity;
 
 import com.airdnb.clone.domain.common.BaseTimeEntity;
 import com.airdnb.clone.domain.common.Guest;
-import com.airdnb.clone.domain.member.Member;
+import com.airdnb.clone.domain.member.entity.Member;
 import com.airdnb.clone.domain.stay.entity.Stay;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
