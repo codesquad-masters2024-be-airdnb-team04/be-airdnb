@@ -30,7 +30,7 @@ public class AvailableAmenity {
     @Column(name = "AVAILABLE_ID")
     private Long id;
 
-    @ManyToOne(fetch =  FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch =  FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "STAY_ID", foreignKey = @ForeignKey(name = "FK_STAY_AVAILABLE_ID"))
     private Stay stay;
 
