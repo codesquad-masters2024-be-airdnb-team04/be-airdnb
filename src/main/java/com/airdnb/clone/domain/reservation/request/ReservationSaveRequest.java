@@ -1,4 +1,4 @@
-package com.airdnb.clone.domain.reservation.dto;
+package com.airdnb.clone.domain.reservation.request;
 
 import com.airdnb.clone.domain.common.Guest;
 import com.airdnb.clone.domain.member.entity.Member;

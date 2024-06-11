@@ -2,8 +2,8 @@ package com.airdnb.clone.domain.reservation;
 
 import com.airdnb.clone.domain.member.MemberRepository;
 import com.airdnb.clone.domain.member.entity.Member;
-import com.airdnb.clone.domain.reservation.dto.ReservationResponse;
-import com.airdnb.clone.domain.reservation.dto.ReservationSaveRequest;
+import com.airdnb.clone.domain.reservation.response.ReservationResponse;
+import com.airdnb.clone.domain.reservation.request.ReservationSaveRequest;
 import com.airdnb.clone.domain.reservation.entity.Reservation;
 import com.airdnb.clone.domain.stay.StayRepository;
 import com.airdnb.clone.domain.stay.entity.Stay;
@@ -27,7 +27,8 @@ public class ReservationService {
                 .orElseThrow();
         Stay stay = stayRepository.findById(request.stayId())
                 .orElseThrow();
-        Reservation saved = reservationRepository.save(request.toEntity(member, stay));
+        Reservation entity = request.toEntity(member, stay);
+        Reservation saved = reservationRepository.save(entity);
         return ReservationResponse.toDto(saved);
     }
 }

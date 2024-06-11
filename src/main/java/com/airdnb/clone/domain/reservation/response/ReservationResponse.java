@@ -1,4 +1,4 @@
-package com.airdnb.clone.domain.reservation.dto;
+package com.airdnb.clone.domain.reservation.response;
 
 import com.airdnb.clone.domain.reservation.entity.Reservation;
 import java.time.LocalDateTime;
