@@ -8,6 +8,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -57,6 +59,7 @@ public class Reservation extends BaseTimeEntity {
     private Guest guest;
 
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     @Column(name = "STATUS")
     private Status status = Status.PENDING;
 
