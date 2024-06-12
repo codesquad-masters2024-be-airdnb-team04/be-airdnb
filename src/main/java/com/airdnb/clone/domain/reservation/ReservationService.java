@@ -1,14 +1,12 @@
 package com.airdnb.clone.domain.reservation;
 
+import com.airdnb.clone.domain.common.Guest;
 import com.airdnb.clone.domain.member.MemberRepository;
 import com.airdnb.clone.domain.member.entity.Member;
 import com.airdnb.clone.domain.reservation.entity.Reservation;
-import com.airdnb.clone.domain.reservation.request.ReservationSaveRequest;
-import com.airdnb.clone.domain.reservation.request.ReservationUpdateRequest;
 import com.airdnb.clone.domain.reservation.response.ReservationResponse;
 import com.airdnb.clone.domain.stay.StayRepository;
 import com.airdnb.clone.domain.stay.entity.Stay;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,14 +23,14 @@ public class ReservationService {
     private final StayRepository stayRepository;
 
     @Transactional
-    public ReservationResponse save(ReservationSaveRequest request) {
-        Member member = memberRepository.findById(request.memberId())
+    public ReservationResponse create(Reservation.ReservationBuilder builder, Long stayId, Long hostId) {
+        Member member = memberRepository.findById(hostId)
                 .orElseThrow();
-        Stay stay = stayRepository.findById(request.stayId())
+        Stay stay = stayRepository.findById(stayId)
                 .orElseThrow();
-        Reservation entity = request.toEntity(member, stay);
+        Reservation entity = builder.member(member).stay(stay).build();
         Reservation saved = reservationRepository.save(entity);
-        return ReservationResponse.toDto(saved);
+        return ReservationResponse.of(saved);
     }
 
     @Transactional
@@ -41,16 +39,16 @@ public class ReservationService {
     }
 
     @Transactional
-    public void update(Long id, ReservationUpdateRequest request) {
+    public void edit(Long id, Guest guest) {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow();
 
-        reservation.updateGuest(request.guestCount());
+        reservation.updateGuest(guest);
     }
 
     public ReservationResponse findById(Long id) {
         return reservationRepository.findById(id)
-                .map(ReservationResponse::toDto)
+                .map(ReservationResponse::of)
                 .orElseThrow();
     }
 }

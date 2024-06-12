@@ -22,23 +22,22 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping
-    public ReservationResponse save(@Valid @RequestBody ReservationSaveRequest request) {
-        return reservationService.save(request);
+    public ReservationResponse create(@Valid @RequestBody ReservationSaveRequest request) {
+        return reservationService.create(request.toBuilder(), request.getStayId(), request.getMemberId());
     }
 
-    @GetMapping("/{id}") //예약 id
+    @GetMapping("/{id}")
     public ReservationResponse findReservation(@PathVariable Long id) {
         return reservationService.findById(id);
     }
 
-
     @PatchMapping("/{id}")
-    public void update(@PathVariable Long id, @Valid @RequestBody ReservationUpdateRequest request) {
-        reservationService.update(id, request);
+    public void edit(@PathVariable Long id, @Valid @RequestBody ReservationUpdateRequest request) {
+        reservationService.edit(id, request.toGuest());
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable("id") Long id) {
         reservationService.delete(id);
     }
 }

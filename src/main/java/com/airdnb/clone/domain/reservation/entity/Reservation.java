@@ -4,7 +4,6 @@ import com.airdnb.clone.domain.common.BaseTimeEntity;
 import com.airdnb.clone.domain.common.Guest;
 import com.airdnb.clone.domain.member.entity.Member;
 import com.airdnb.clone.domain.stay.entity.Stay;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -63,8 +62,8 @@ public class Reservation extends BaseTimeEntity {
     @Column(name = "STATUS")
     private Status status = Status.PENDING;
 
-    public void updateGuest(Integer guestCount) {
-        this.guest = Guest.builder().guestCount(guestCount).build();
+    public void updateGuest(Guest guest) {
+        this.guest = guest;
     }
 
     public void confirm() {
