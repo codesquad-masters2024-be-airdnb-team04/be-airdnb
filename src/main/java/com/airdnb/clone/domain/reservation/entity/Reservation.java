@@ -36,11 +36,11 @@ public class Reservation extends BaseTimeEntity {
     @Column(name = "RESERVATION_ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID", foreignKey = @ForeignKey(name = "FK_MEMBER_RESERVE_ID"))
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STAY_ID", foreignKey = @ForeignKey(name = "FK_STAY_RESERVE_ID"))
     private Stay stay;
 

@@ -2,11 +2,10 @@ package com.airdnb.clone.domain.reservation;
 
 import com.airdnb.clone.domain.member.MemberRepository;
 import com.airdnb.clone.domain.member.entity.Member;
-import com.airdnb.clone.domain.reservation.request.ReservationDeleteRequest;
+import com.airdnb.clone.domain.reservation.entity.Reservation;
+import com.airdnb.clone.domain.reservation.request.ReservationSaveRequest;
 import com.airdnb.clone.domain.reservation.request.ReservationUpdateRequest;
 import com.airdnb.clone.domain.reservation.response.ReservationResponse;
-import com.airdnb.clone.domain.reservation.request.ReservationSaveRequest;
-import com.airdnb.clone.domain.reservation.entity.Reservation;
 import com.airdnb.clone.domain.stay.StayRepository;
 import com.airdnb.clone.domain.stay.entity.Stay;
 import java.util.List;
@@ -18,11 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class ReservationService {
 
-    private ReservationRepository reservationRepository;
-    private MemberRepository memberRepository;
-    private StayRepository stayRepository;
+    private final ReservationRepository reservationRepository;
+    private final MemberRepository memberRepository;
+    private final StayRepository stayRepository;
 
     @Transactional
     public ReservationResponse save(ReservationSaveRequest request) {
@@ -36,8 +36,8 @@ public class ReservationService {
     }
 
     @Transactional
-    public void delete(ReservationDeleteRequest request) {
-        reservationRepository.deleteById(request.reservationId());
+    public void delete(Long id) {
+        reservationRepository.deleteById(id);
     }
 
     @Transactional
