@@ -41,10 +41,11 @@ public class ReservationService {
     }
 
     @Transactional
-    public void update(ReservationUpdateRequest request) {
-        Reservation entity = reservationRepository.findById(request.reservationId())
+    public void update(Long id, ReservationUpdateRequest request) {
+        Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow();
-        entity.updateGuest(request.guestCount());
+
+        reservation.updateGuest(request.guestCount());
     }
 
     public List<ReservationResponse> findReservationsByMemberId(Long memberId) {
