@@ -1,5 +1,6 @@
 package com.airdnb.clone.domain.stay.controller.dto.response;
 
+import com.airdnb.clone.domain.stay.controller.dto.response.edit.RoomInfoResponse;
 import com.airdnb.clone.domain.stay.entity.Amenity;
 import com.airdnb.clone.domain.stay.entity.AvailableAmenity;
 import com.airdnb.clone.domain.stay.entity.Stay;

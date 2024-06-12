@@ -1,4 +1,4 @@
-package com.airdnb.clone.domain.stay.controller.dto.response;
+package com.airdnb.clone.domain.stay.controller.dto.response.edit;
 
 import com.airdnb.clone.domain.stay.entity.RoomInformation;
 import lombok.AccessLevel;

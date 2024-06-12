@@ -11,7 +11,6 @@ import com.airdnb.clone.domain.stay.controller.dto.request.edit.LocationEditRequ
 import com.airdnb.clone.domain.stay.controller.dto.request.edit.RoomInfoEditRequest;
 import com.airdnb.clone.domain.stay.controller.dto.request.edit.StatusEditRequest;
 import com.airdnb.clone.domain.stay.controller.dto.request.edit.TypeEditRequest;
-import com.airdnb.clone.domain.stay.controller.dto.response.RoomInfoResponse;
 import com.airdnb.clone.domain.stay.controller.dto.response.StayDetailResponse;
 import com.airdnb.clone.domain.stay.controller.dto.response.edit.AliasEditResponse;
 import com.airdnb.clone.domain.stay.controller.dto.response.edit.AvailableAmenitiesResponse;
@@ -20,9 +19,9 @@ import com.airdnb.clone.domain.stay.controller.dto.response.edit.DescriptionEdit
 import com.airdnb.clone.domain.stay.controller.dto.response.edit.FeeEditResponse;
 import com.airdnb.clone.domain.stay.controller.dto.response.edit.ImagesEditResponse;
 import com.airdnb.clone.domain.stay.controller.dto.response.edit.LocationEditResponse;
+import com.airdnb.clone.domain.stay.controller.dto.response.edit.RoomInfoResponse;
 import com.airdnb.clone.domain.stay.controller.dto.response.edit.StatusEditResponse;
 import com.airdnb.clone.domain.stay.controller.dto.response.edit.TypeEditResponse;
-import com.airdnb.clone.domain.stay.entity.AvailableAmenity;
 import com.airdnb.clone.domain.stay.entity.Stay;
 import com.airdnb.clone.domain.stay.service.StayService;
 import jakarta.validation.Valid;
@@ -49,14 +48,12 @@ public class StayController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public StayDetailResponse create(@Valid @RequestBody StayCreateRequest request) {
-        Stay savedStay = stayService.create(request.toStayBuilder(), request.getHostId(), request.getAmenityIds());
-
-        return StayDetailResponse.of(savedStay);
+        return stayService.create(request.toStayBuilder(), request.getHostId(), request.getAmenityIds());
     }
 
     @GetMapping("/{id}")
     public StayDetailResponse getStayDetail(@PathVariable("id") Long id) {
-        return StayDetailResponse.of(stayService.getStay(id));
+        return stayService.getStay(id);
     }
 
     @GetMapping
@@ -74,80 +71,60 @@ public class StayController {
     @PatchMapping("/{id}/alias")
     public AliasEditResponse editAlias(@PathVariable("id") Long id,
                                        @Valid @RequestBody AliasEditRequest request) {
-        Stay stay = stayService.editAlias(id, request.getAlias());
-
-        return AliasEditResponse.of(stay.getAlias());
+        return stayService.editAlias(id, request.getAlias());
     }
 
     @PatchMapping("/{id}/amenities")
     public AvailableAmenitiesResponse editAmenities(@PathVariable("id") Long id,
                                                     @Valid @RequestBody AmenitiesEditRequest request) {
-        List<AvailableAmenity> amenities = stayService.editAmenities(id, request.getAmenityIds());
-
-        return AvailableAmenitiesResponse.of(amenities);
+        return stayService.editAmenities(id, request.getAmenityIds());
     }
 
     @PatchMapping("/{id}/check-in-out")
     public CheckInOutTimeEditResponse editCheckInOutTime(@PathVariable("id") Long id,
                                                          @Valid @RequestBody CheckInOutTimeEditRequest request) {
-        Stay stay = stayService.editCheckInOutTime(id, request.getCheckInTime(), request.getCheckOutTime());
-
-        return CheckInOutTimeEditResponse.of(stay.getCheckInTime(), stay.getCheckOutTime());
+        return stayService.editCheckInOutTime(id, request.getCheckInTime(), request.getCheckOutTime());
     }
 
     @PatchMapping("/{id}/description")
     public DescriptionEditResponse editDescription(@PathVariable("id") Long id,
                                                    @Valid @RequestBody DescriptionEditRequest request) {
-        Stay stay = stayService.editDescription(id, request.getDescription());
-
-        return DescriptionEditResponse.of(stay.getDescription());
+        return stayService.editDescription(id, request.getDescription());
     }
 
     @PatchMapping("/{id}/fee")
     public FeeEditResponse editFee(@PathVariable("id") Long id,
                                    @Valid @RequestBody FeeEditRequest request) {
-        Stay stay = stayService.editFee(id, request.getFee());
-
-        return FeeEditResponse.of(stay.getFee());
+        return stayService.editFee(id, request.getFee());
     }
 
     @PatchMapping("/{id}/images")
     public ImagesEditResponse editImages(@PathVariable("id") Long id,
                                          @Valid @RequestBody ImagesEditRequest request) {
-        Stay stay = stayService.editImages(id, request.getImages());
-
-        return ImagesEditResponse.of(stay.getImages());
+        return stayService.editImages(id, request.getImages());
     }
 
     @PatchMapping("/{id}/location")
     public LocationEditResponse editLocation(@PathVariable("id") Long id,
                                              @Valid @RequestBody LocationEditRequest request) {
-        Stay stay = stayService.editLocation(id, request.getLocation());
-
-        return LocationEditResponse.of(stay.getLocation());
+        return stayService.editLocation(id, request.getLocation());
     }
 
     @PatchMapping("/{id}/room")
     public RoomInfoResponse editRoomInfo(@PathVariable("id") Long id,
                                          @Valid @RequestBody RoomInfoEditRequest request) {
-        Stay stay = stayService.editRoomInfo(id, request.toRoomInformation());
-
-        return RoomInfoResponse.of(stay.getRoomInfo());
+        return stayService.editRoomInfo(id, request.toRoomInformation());
     }
 
     @PatchMapping("/{id}/status")
     public StatusEditResponse editStatus(@PathVariable("id") Long id,
                                          @Valid @RequestBody StatusEditRequest request) {
-        Stay stay = stayService.editStatus(id, request.getStatus());
-
-        return StatusEditResponse.of(stay.getStatus());
+        return stayService.editStatus(id, request.getStatus());
     }
 
     @PatchMapping("/{id}/type")
     public TypeEditResponse editType(@PathVariable("id") Long id,
                                      @Valid @RequestBody TypeEditRequest request) {
-        Stay stay = stayService.editType(id, request.getType());
-
-        return TypeEditResponse.of(stay.getType());
+        return stayService.editType(id, request.getType());
     }
 }

@@ -4,6 +4,17 @@ import static com.airdnb.clone.domain.stay.entity.Stay.StayBuilder;
 
 import com.airdnb.clone.domain.member.Member;
 import com.airdnb.clone.domain.member.repository.MemberRepository;
+import com.airdnb.clone.domain.stay.controller.dto.response.StayDetailResponse;
+import com.airdnb.clone.domain.stay.controller.dto.response.edit.AliasEditResponse;
+import com.airdnb.clone.domain.stay.controller.dto.response.edit.AvailableAmenitiesResponse;
+import com.airdnb.clone.domain.stay.controller.dto.response.edit.CheckInOutTimeEditResponse;
+import com.airdnb.clone.domain.stay.controller.dto.response.edit.DescriptionEditResponse;
+import com.airdnb.clone.domain.stay.controller.dto.response.edit.FeeEditResponse;
+import com.airdnb.clone.domain.stay.controller.dto.response.edit.ImagesEditResponse;
+import com.airdnb.clone.domain.stay.controller.dto.response.edit.LocationEditResponse;
+import com.airdnb.clone.domain.stay.controller.dto.response.edit.RoomInfoResponse;
+import com.airdnb.clone.domain.stay.controller.dto.response.edit.StatusEditResponse;
+import com.airdnb.clone.domain.stay.controller.dto.response.edit.TypeEditResponse;
 import com.airdnb.clone.domain.stay.entity.AvailableAmenity;
 import com.airdnb.clone.domain.stay.entity.RoomInformation;
 import com.airdnb.clone.domain.stay.entity.Stay;
@@ -32,27 +43,26 @@ public class StayService {
     private final AmenityRepository amenityRepository;
 
     @Transactional
-    public Stay create(StayBuilder stayBuilder, Long hostId, List<Long> amenityIds) {
-        Stay savedStay = saveByHostId(stayBuilder, hostId);
+    public StayDetailResponse create(StayBuilder builder, Long hostId, List<Long> amenityIds) {
+        Stay savedStay = saveByHostId(builder, hostId);
 
         saveAvailableAmenities(amenityIds, savedStay);
 
-        return savedStay;
+        return StayDetailResponse.of(savedStay);
     }
 
-    private Stay saveByHostId(StayBuilder stayBuilder, Long hostId) {
+    private Stay saveByHostId(StayBuilder builder, Long hostId) {
         Member host = memberRepository.findById(hostId)
-                .orElseThrow(IllegalStateException::new);
+                .orElseThrow();
 
-        Stay stay = stayBuilder.host(host).build();
+        Stay stay = builder.host(host).build();
 
-        Stay savedStay = stayRepository.save(stay);
-        return savedStay;
+        return stayRepository.save(stay);
     }
 
     private void saveAvailableAmenities(List<Long> amenityIds, Stay savedStay) {
         amenityIds.stream()
-                .map(amenityId -> amenityRepository.findById(amenityId).orElseThrow(IllegalStateException::new))
+                .map(amenityId -> amenityRepository.findById(amenityId).orElseThrow())
                 .forEach(amenity -> {
                     AvailableAmenity availableAmenity = AvailableAmenity.builder() // 이용 가능 비품 생성
                             .stay(savedStay)
@@ -65,9 +75,11 @@ public class StayService {
                 });
     }
 
-    public Stay getStay(Long stayId) {
-        return stayRepository.findById(stayId)
-                .orElseThrow(IllegalStateException::new);
+    public StayDetailResponse getStay(Long stayId) {
+        Stay stay = stayRepository.findById(stayId)
+                .orElseThrow();
+
+        return StayDetailResponse.of(stay);
     }
 
     @Transactional(readOnly = true)
@@ -76,78 +88,96 @@ public class StayService {
     }
 
     @Transactional
-    public Stay editAlias(Long stayId, String alias) {
-        return stayRepository.findById(stayId)
-                .orElseThrow(IllegalStateException::new)
-                .changeAlias(alias);
-    }
-
-    @Transactional
-    public Stay editLocation(Long stayId, String location) {
-        return stayRepository.findById(stayId)
-                .orElseThrow(IllegalStateException::new)
-                .changeLocation(location);
-    }
-
-    @Transactional
-    public Stay editCheckInOutTime(Long stayId, LocalTime checkInTime, LocalTime checkOutTime) {
-        return stayRepository.findById(stayId)
-                .orElseThrow(IllegalStateException::new)
-                .changeCheckInOutTime(checkInTime, checkOutTime);
-    }
-
-    @Transactional
-    public Stay editDescription(Long stayId, String description) {
-        return stayRepository.findById(stayId)
-                .orElseThrow(IllegalStateException::new)
-                .changeDescription(description);
-    }
-
-    @Transactional
-    public Stay editFee(Long stayId, StayFee fee) {
-        return stayRepository.findById(stayId)
-                .orElseThrow(IllegalStateException::new)
-                .changeFee(fee);
-    }
-
-    @Transactional
-    public Stay editType(Long stayId, Type type) {
-        return stayRepository.findById(stayId)
-                .orElseThrow(IllegalStateException::new)
-                .changeType(type);
-    }
-
-    @Transactional
-    public Stay editStatus(Long stayId, Status status) {
-        return stayRepository.findById(stayId)
-                .orElseThrow(IllegalStateException::new)
-                .changeStatus(status);
-    }
-
-    @Transactional
-    public List<AvailableAmenity> editAmenities(Long stayId, List<Long> amenityIds) {
+    public AliasEditResponse editAlias(Long stayId, String alias) {
         Stay stay = stayRepository.findById(stayId)
-                .orElseThrow(IllegalStateException::new);
+                .orElseThrow()
+                .changeAlias(alias);
+
+        return AliasEditResponse.of(stay.getAlias());
+    }
+
+    @Transactional
+    public LocationEditResponse editLocation(Long stayId, String location) {
+        Stay stay = stayRepository.findById(stayId)
+                .orElseThrow()
+                .changeLocation(location);
+
+        return LocationEditResponse.of(stay.getLocation());
+    }
+
+    @Transactional
+    public CheckInOutTimeEditResponse editCheckInOutTime(Long stayId, LocalTime checkInTime, LocalTime checkOutTime) {
+        Stay stay = stayRepository.findById(stayId)
+                .orElseThrow()
+                .changeCheckInOutTime(checkInTime, checkOutTime);
+
+        return CheckInOutTimeEditResponse.of(stay.getCheckInTime(), stay.getCheckOutTime());
+    }
+
+    @Transactional
+    public DescriptionEditResponse editDescription(Long stayId, String description) {
+        Stay stay = stayRepository.findById(stayId)
+                .orElseThrow()
+                .changeDescription(description);
+
+        return DescriptionEditResponse.of(stay.getDescription());
+    }
+
+    @Transactional
+    public FeeEditResponse editFee(Long stayId, StayFee fee) {
+        Stay stay = stayRepository.findById(stayId)
+                .orElseThrow()
+                .changeFee(fee);
+
+        return FeeEditResponse.of(stay.getFee());
+    }
+
+    @Transactional
+    public TypeEditResponse editType(Long stayId, Type type) {
+        Stay stay = stayRepository.findById(stayId)
+                .orElseThrow()
+                .changeType(type);
+
+        return TypeEditResponse.of(stay.getType());
+    }
+
+    @Transactional
+    public StatusEditResponse editStatus(Long stayId, Status status) {
+        Stay stay = stayRepository.findById(stayId)
+                .orElseThrow()
+                .changeStatus(status);
+
+        return StatusEditResponse.of(stay.getStatus());
+    }
+
+    @Transactional
+    public AvailableAmenitiesResponse editAmenities(Long stayId, List<Long> amenityIds) {
+        Stay stay = stayRepository.findById(stayId)
+                .orElseThrow();
 
         stay.getAmenities().stream()
                 .filter(availableAmenity -> !amenityIds.contains(availableAmenity.getAmenity().getId()))
                 .forEach(AvailableAmenity::deleteFromStay);
 
-        return stay.getAmenities();
+        return AvailableAmenitiesResponse.of(stay.getAmenities());
     }
 
     @Transactional
-    public Stay editImages(Long stayId, List<StayImage> images) {
-        return stayRepository.findById(stayId)
-                .orElseThrow(IllegalStateException::new)
+    public ImagesEditResponse editImages(Long stayId, List<StayImage> images) {
+        Stay stay = stayRepository.findById(stayId)
+                .orElseThrow()
                 .changeImages(images);
+
+        return ImagesEditResponse.of(stay.getImages());
     }
 
     @Transactional
-    public Stay editRoomInfo(Long stayId, RoomInformation roomInfo) {
-        return stayRepository.findById(stayId)
-                .orElseThrow(IllegalStateException::new)
+    public RoomInfoResponse editRoomInfo(Long stayId, RoomInformation roomInfo) {
+        Stay stay = stayRepository.findById(stayId)
+                .orElseThrow()
                 .changeRoomInfo(roomInfo);
+
+        return RoomInfoResponse.of(stay.getRoomInfo());
     }
 
     @Transactional
