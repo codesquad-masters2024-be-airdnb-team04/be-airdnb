@@ -2,17 +2,40 @@ package com.airdnb.clone.domain.reservation.response;
 
 import com.airdnb.clone.domain.reservation.entity.Reservation;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-public record ReservationResponse(
-        Long reservationId,
-        Long memberId,
-        Long stayId,
-        LocalDateTime checkIn,
-        LocalDateTime checkOut,
-        Long totalRate,
-        Integer guestCount
-) {
-    public static ReservationResponse toDto(Reservation reservation) {
+@Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
+public class ReservationResponse {
+    private final Long reservationId;
+    private final Long memberId;
+    private final Long stayId;
+    private final LocalDateTime checkIn;
+    private final LocalDateTime checkOut;
+    private final Long totalRate;
+    private final Integer guestCount;
+
+    public ReservationResponse(
+            Long reservationId,
+            Long memberId,
+            Long stayId,
+            LocalDateTime checkIn,
+            LocalDateTime checkOut,
+            Long totalRate,
+            Integer guestCount
+    ) {
+        this.reservationId = reservationId;
+        this.memberId = memberId;
+        this.stayId = stayId;
+        this.checkIn = checkIn;
+        this.checkOut = checkOut;
+        this.totalRate = totalRate;
+        this.guestCount = guestCount;
+    }
+
+    public static ReservationResponse of(Reservation reservation) {
         return new ReservationResponse(
                 reservation.getId(),
                 reservation.getMember().getId(),

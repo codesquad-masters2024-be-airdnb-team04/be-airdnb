@@ -1,42 +1,44 @@
 package com.airdnb.clone.domain.reservation.request;
 
 import com.airdnb.clone.domain.common.Guest;
-import com.airdnb.clone.domain.member.entity.Member;
 import com.airdnb.clone.domain.reservation.entity.Reservation;
-import com.airdnb.clone.domain.stay.entity.Stay;
+import com.airdnb.clone.domain.reservation.entity.Reservation.ReservationBuilder;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-public record ReservationSaveRequest(
 
-        @NotNull
-        Long memberId,
+@Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
+public class ReservationSaveRequest {
 
-        @NotNull
-        Long stayId,
+    @NotNull
+    private final Long memberId;
 
-        @Future
-        LocalDateTime checkIn,
+    @NotNull
+    private final Long stayId;
 
-        @Future
-        LocalDateTime checkOut,
+    @Future
+    private final LocalDateTime checkIn;
 
-        @Min(value = 0)
-        Long totalRate,
+    @Future
+    private final LocalDateTime checkOut;
 
-        @Min(value = 1)
-        Integer guestCount
-) {
-    public Reservation toEntity(Member member, Stay stay) {
+    @Min(value = 0)
+    private final Long totalRate;
+
+    @Min(value = 1)
+    private final Integer guestCount;
+
+    public ReservationBuilder toBuilder() {
         return Reservation.builder()
-                .member(member)
-                .stay(stay)
                 .checkIn(checkIn)
                 .checkOut(checkOut)
                 .totalRate(totalRate)
-                .guest(Guest.builder().guestCount(guestCount).build())
-                .build();
+                .guest(Guest.builder().guestCount(guestCount).build());
     }
 }
