@@ -48,9 +48,9 @@ public class ReservationService {
         reservation.updateGuest(request.guestCount());
     }
 
-    public List<ReservationResponse> findReservationsByMemberId(Long memberId) {
-        return reservationRepository.findAllByMemberId(memberId).stream()
+    public ReservationResponse findById(Long id) {
+        return reservationRepository.findById(id)
                 .map(ReservationResponse::toDto)
-                .toList();
+                .orElseThrow();
     }
 }
