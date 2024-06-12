@@ -61,7 +61,6 @@ public class Stay extends BaseTimeEntity {
     private String description;
 
     @Embedded
-    @Column(name = "FEE")
     private StayFee fee;
 
     @Enumerated(EnumType.STRING)
@@ -142,7 +141,7 @@ public class Stay extends BaseTimeEntity {
     }
 
     public enum Status {
-        OPEN, REPAIR, CLOSE
+        OPEN, REPAIR, CLOSED
     }
 
     public enum Type {
