@@ -17,24 +17,6 @@ public class ReservationResponse {
     private final Long totalRate;
     private final Integer guestCount;
 
-    public ReservationResponse(
-            Long reservationId,
-            Long memberId,
-            Long stayId,
-            LocalDateTime checkIn,
-            LocalDateTime checkOut,
-            Long totalRate,
-            Integer guestCount
-    ) {
-        this.reservationId = reservationId;
-        this.memberId = memberId;
-        this.stayId = stayId;
-        this.checkIn = checkIn;
-        this.checkOut = checkOut;
-        this.totalRate = totalRate;
-        this.guestCount = guestCount;
-    }
-
     public static ReservationResponse of(Reservation reservation) {
         return new ReservationResponse(
                 reservation.getId(),
