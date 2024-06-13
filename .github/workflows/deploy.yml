@@ -3,7 +3,7 @@ name: Docker 기반 CI/CD 구축하기
 on:
   push:
     branches:
-      - feat/#5
+      - release
 
 jobs:
   deploy:
