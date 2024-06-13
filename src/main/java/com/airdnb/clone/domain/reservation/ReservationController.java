@@ -32,7 +32,7 @@ public class ReservationController {
     }
 
     @PatchMapping("/{id}")
-    public void edit(@PathVariable Long id, @Valid @RequestBody ReservationUpdateRequest request) {
+    public void edit(@PathVariable("id") Long id, @Valid @RequestBody ReservationUpdateRequest request) {
         reservationService.edit(id, request.toGuest());
     }
 
