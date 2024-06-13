@@ -58,4 +58,8 @@ jobs:
             docker stop airdnb-server || true
             docker rm airdnb-server || true
             docker pull ${{ steps.login-ecr.outputs.registry }}/airdnb-server:latest
-            docker run -d --name airdnb-server -p 8080:8080 ${{ steps.login-ecr.outputs.registry }}/airdnb-server:latest
+            docker run -d --name airdnb-server -p 8080:8080
+            -e SPRING_DATASOURCE_URL=${{ RDS_ENDPOINT }}
+            -e SPRING_DATASOURCE_USERNAME=${{ RDS_USERNAME }}
+            -e SPRING_DATASOURCE_PASSWORD=${{ RDS_PASSWORD }}
+            ${{ steps.login-ecr.outputs.registry }}/airdnb-server:latest
