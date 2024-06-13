@@ -43,7 +43,7 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow();
 
-        reservation.updateGuest(guest);
+        reservation.changeGuest(guest);
     }
 
     public ReservationResponse findById(Long id) {
