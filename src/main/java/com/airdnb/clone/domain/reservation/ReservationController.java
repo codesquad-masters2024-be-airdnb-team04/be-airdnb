@@ -27,7 +27,7 @@ public class ReservationController {
     }
 
     @GetMapping("/{id}")
-    public ReservationResponse findReservation(@PathVariable Long id) {
+    public ReservationResponse findReservation(@PathVariable("id") Long id) {
         return reservationService.findById(id);
     }
 
