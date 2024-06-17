@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class AirdnbUsernamePasswordAuthenticationProvider implements AuthenticationProvider {
 
     private final MemberRepository memberRepository;
