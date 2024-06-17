@@ -1,5 +1,6 @@
 package com.airdnb.clone.domain.filter.controller.request;
 
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -13,11 +14,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AvailableStayRequest {
 
-    @NotNull
-    private final LocalDate startDate;
+    @Future
+    private final LocalDate checkInDate;
 
-    @NotNull
-    private final LocalDate endDate;
+    @Future
+    private final LocalDate checkOutDate;
 
     @NotNull
     @Min(value = 0)
