@@ -62,6 +62,8 @@ public class Reservation extends BaseTimeEntity {
     @Column(name = "STATUS")
     private Status status = Status.PENDING;
 
+    public static class ReservationBuilder{}
+
     public void changeGuest(Guest guest) {
         this.guest = guest;
     }
