@@ -1,6 +1,6 @@
-package com.airdnb.clone.domain.reservation.repository;
+package com.airdnb.clone.domain.booking.repository;
 
-import static com.airdnb.clone.domain.reservation.entity.QReservation.reservation;
+import static com.airdnb.clone.domain.booking.entity.QReservation.reservation;
 import static com.airdnb.clone.domain.stay.entity.QStay.stay;
 
 import com.airdnb.clone.domain.stay.entity.Stay;
@@ -15,7 +15,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class ReservationQuerydslImpl implements ReservationQuerydsl {
+public class BookingQuerydslImpl implements BookingQuerydsl {
 
     private final JPAQueryFactory jpaQueryFactory;
 

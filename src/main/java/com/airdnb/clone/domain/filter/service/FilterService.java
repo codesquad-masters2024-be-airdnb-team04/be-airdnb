@@ -1,6 +1,6 @@
 package com.airdnb.clone.domain.filter.service;
 
-import com.airdnb.clone.domain.reservation.repository.ReservationRepository;
+import com.airdnb.clone.domain.booking.repository.BookingRepository;
 import com.airdnb.clone.domain.stay.controller.dto.response.StayDetailResponse;
 import com.airdnb.clone.domain.stay.entity.Stay;
 import java.time.LocalDate;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class FilterService {
 
-    private final ReservationRepository reservationRepository;
+    private final BookingRepository reservationRepository;
 
     public List<StayDetailResponse> getAvailableStays(LocalDate checkInDate, LocalDate checkOutDate, Integer minPrice,
                                                       Integer maxPrice, Integer guestCount) {

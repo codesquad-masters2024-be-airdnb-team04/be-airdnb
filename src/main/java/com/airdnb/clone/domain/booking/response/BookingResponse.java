@@ -1,6 +1,6 @@
-package com.airdnb.clone.domain.reservation.response;
+package com.airdnb.clone.domain.booking.response;
 
-import com.airdnb.clone.domain.reservation.entity.Reservation;
+import com.airdnb.clone.domain.booking.entity.Reservation;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ReservationResponse {
+public class BookingResponse {
     private final Long reservationId;
     private final Long memberId;
     private final Long stayId;
@@ -19,8 +19,8 @@ public class ReservationResponse {
     private final Long totalRate;
     private final Integer guestCount;
 
-    public static ReservationResponse of(Reservation reservation) {
-        return new ReservationResponse(
+    public static BookingResponse of(Reservation reservation) {
+        return new BookingResponse(
                 reservation.getId(),
                 reservation.getMember().getId(),
                 reservation.getStay().getId(),

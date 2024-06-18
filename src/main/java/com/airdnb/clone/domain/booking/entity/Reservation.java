@@ -1,4 +1,4 @@
-package com.airdnb.clone.domain.reservation.entity;
+package com.airdnb.clone.domain.booking.entity;
 
 import com.airdnb.clone.domain.common.BaseTimeEntity;
 import com.airdnb.clone.domain.common.Guest;
