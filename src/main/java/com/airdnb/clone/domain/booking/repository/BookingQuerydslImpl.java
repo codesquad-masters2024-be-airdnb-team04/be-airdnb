@@ -1,6 +1,6 @@
 package com.airdnb.clone.domain.booking.repository;
 
-import static com.airdnb.clone.domain.booking.entity.QReservation.reservation;
+import static com.airdnb.clone.domain.booking.entity.QBooking.booking;
 import static com.airdnb.clone.domain.stay.entity.QStay.stay;
 
 import com.airdnb.clone.domain.stay.entity.Stay;
@@ -22,13 +22,13 @@ public class BookingQuerydslImpl implements BookingQuerydsl {
     public List<Stay> findAvailableStays(LocalDate checkInDate, LocalDate checkOutDate, Integer minPrice, Integer maxPrice, Integer guestCount) {
         return jpaQueryFactory
                 .select(stay)
-                .from(reservation)
+                .from(booking)
                 .rightJoin(stay)
-                .on(reservation.stay.id.eq(stay.id).and(matchesCheckInAndCheckOut(checkInDate, checkOutDate)))
+                .on(booking.stay.id.eq(stay.id).and(matchesCheckInAndCheckOut(checkInDate, checkOutDate)))
                 .where(
                         matchesTotalPrice(minPrice, maxPrice),
                         matchesGuestCount(guestCount),
-                        reservation.id.isNull())
+                        booking.id.isNull())
                 .fetch();
     }
 
@@ -62,21 +62,21 @@ public class BookingQuerydslImpl implements BookingQuerydsl {
         }
 
         DateTemplate<LocalDate> bookedCheckInDate = Expressions.dateTemplate(LocalDate.class,
-                "CAST({0} AS DATE)", reservation.checkIn);
+                "CAST({0} AS DATE)", booking.checkIn);
 
         TimeTemplate<LocalTime> bookedCheckInTime = Expressions.timeTemplate(LocalTime.class,
-                "CAST({0} AS TIME)", reservation.checkIn);
+                "CAST({0} AS TIME)", booking.checkIn);
 
         DateTemplate<LocalDate> bookedCheckOutDate = Expressions.dateTemplate(LocalDate.class,
-                "CAST({0} AS DATE)", reservation.checkOut);
+                "CAST({0} AS DATE)", booking.checkOut);
 
         TimeTemplate<LocalTime> bookedCheckOutTime = Expressions.timeTemplate(LocalTime.class,
-                "CAST({0} AS TIME)", reservation.checkOut);
+                "CAST({0} AS TIME)", booking.checkOut);
 
       return  bookedCheckInDate.lt(checkOutDate)
               //                                             15시                  11시
-                .or(bookedCheckInDate.eq(checkOutDate).and(bookedCheckInTime.lt(reservation.stay.checkOutTime)))
+                .or(bookedCheckInDate.eq(checkOutDate).and(bookedCheckInTime.lt(booking.stay.checkOutTime)))
                 .and(bookedCheckOutDate.gt(checkInDate)
-                        .or(bookedCheckOutDate.eq(checkInDate).and(bookedCheckOutTime.gt(reservation.stay.checkInTime))));
+                        .or(bookedCheckOutDate.eq(checkInDate).and(bookedCheckOutTime.gt(booking.stay.checkInTime))));
     }
 }

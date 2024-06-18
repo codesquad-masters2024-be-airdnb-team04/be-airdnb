@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/reservations")
+@RequestMapping("/api/v1/bookings")
 public class BookingController {
 
     private final BookingService bookingService;
@@ -27,7 +27,7 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
-    public BookingResponse findReservation(@PathVariable("id") Long id) {
+    public BookingResponse findBooking(@PathVariable("id") Long id) {
         return bookingService.findById(id);
     }
 

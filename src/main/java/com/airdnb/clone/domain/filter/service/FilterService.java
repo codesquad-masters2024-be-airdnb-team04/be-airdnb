@@ -14,12 +14,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class FilterService {
 
-    private final BookingRepository reservationRepository;
+    private final BookingRepository bookingRepository;
 
     public List<StayDetailResponse> getAvailableStays(LocalDate checkInDate, LocalDate checkOutDate, Integer minPrice,
                                                       Integer maxPrice, Integer guestCount) {
 
-        List<Stay> availableStays = reservationRepository.findAvailableStays(
+        List<Stay> availableStays = bookingRepository.findAvailableStays(
                 checkInDate, checkOutDate, minPrice, maxPrice, guestCount);
 
         return availableStays.stream()

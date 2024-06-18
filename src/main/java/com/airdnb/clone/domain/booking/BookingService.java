@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class BookingService {
 
-    private final BookingRepository reservationRepository;
+    private final BookingRepository bookingRepository;
     private final MemberRepository memberRepository;
     private final StayRepository stayRepository;
 
@@ -30,25 +30,25 @@ public class BookingService {
         Stay stay = stayRepository.findById(stayId)
                 .orElseThrow();
         Booking entity = builder.member(member).stay(stay).build();
-        Booking saved = reservationRepository.save(entity);
+        Booking saved = bookingRepository.save(entity);
         return BookingResponse.of(saved);
     }
 
     @Transactional
     public void delete(Long id) {
-        reservationRepository.deleteById(id);
+        bookingRepository.deleteById(id);
     }
 
     @Transactional
     public void edit(Long id, Guest guest) {
-        Booking booking = reservationRepository.findById(id)
+        Booking booking = bookingRepository.findById(id)
                 .orElseThrow();
 
         booking.changeGuest(guest);
     }
 
     public BookingResponse findById(Long id) {
-        return reservationRepository.findById(id)
+        return bookingRepository.findById(id)
                 .map(BookingResponse::of)
                 .orElseThrow();
     }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookingResponse {
-    private final Long reservationId;
+    private final Long bookingId;
     private final Long memberId;
     private final Long stayId;
     private final LocalDateTime checkIn;
