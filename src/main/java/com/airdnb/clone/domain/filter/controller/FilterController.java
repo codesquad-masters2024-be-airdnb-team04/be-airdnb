@@ -28,7 +28,7 @@ public class FilterController {
             checkInDate = LocalDate.now();
         }
         if (checkOutDate == null) {
-            checkOutDate = LocalDate.now();
+            checkOutDate = checkInDate.plusDays(DEFAULT_INTERVAL_DAYS);
         }
         return filterService.getAvailableStays(checkInDate, checkOutDate, minPrice, maxPrice, guestCount);
     }
