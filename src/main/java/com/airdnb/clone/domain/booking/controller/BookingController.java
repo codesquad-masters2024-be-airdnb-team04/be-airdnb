@@ -24,7 +24,7 @@ public class BookingController {
 
     @PostMapping
     public BookingResponse create(@Valid @RequestBody BookingSaveRequest request) {
-        return bookingService.create(request.toBuilder(), request.getStayId(), request.getMemberId());
+        return bookingService.create(request);
     }
 
     @GetMapping("/{id}")
@@ -34,7 +34,7 @@ public class BookingController {
 
     @PatchMapping("/{id}")
     public void edit(@PathVariable("id") Long id, @Valid @RequestBody BookingUpdateRequest request) {
-        bookingService.edit(id, request.toGuest());
+        bookingService.edit(id, request.getGuestCount());
     }
 
     @DeleteMapping("/{id}")

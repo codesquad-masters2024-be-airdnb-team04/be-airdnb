@@ -27,7 +27,7 @@ public class BookingResponse {
                 booking.getCheckIn(),
                 booking.getCheckOut(),
                 booking.getTotalRate(),
-                booking.getGuest().getGuestCount()
+                booking.getGuestCount()
         );
     }
 }

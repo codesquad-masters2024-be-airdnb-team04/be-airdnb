@@ -1,10 +1,7 @@
 package com.airdnb.clone.domain.stay.entity;
 
-import com.airdnb.clone.domain.common.Guest;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,10 +17,9 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class RoomInformation {
 
-    @JsonProperty(value = "guestCount")
     @Builder.Default
-    @Embedded
-    private Guest guest = Guest.builder().guestCount(1).build();
+    @Column(name = "GUEST_COUNT")
+    private Integer guestCount = 1;
 
     @Builder.Default
     @Column(name = "BEDROOM_COUNT")
@@ -36,4 +32,10 @@ public class RoomInformation {
     @Builder.Default
     @Column(name = "BATH_COUNT")
     private Integer bathCount = 0;
+
+    public void validate(Integer guestCount) {
+        if (this.guestCount < guestCount) {
+            throw new IllegalArgumentException("최대 허용 인원수 초과, 집이 작아요");
+        }
+    }
 }

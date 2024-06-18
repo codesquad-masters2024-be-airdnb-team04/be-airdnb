@@ -19,7 +19,8 @@ public class BookingQuerydslImpl implements BookingQuerydsl {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public List<Stay> findAvailableStays(LocalDate checkInDate, LocalDate checkOutDate, Integer minPrice, Integer maxPrice, Integer guestCount) {
+    public List<Stay> findAvailableStays(LocalDate checkInDate, LocalDate checkOutDate, Integer minPrice,
+                                         Integer maxPrice, Integer guestCount) {
         return jpaQueryFactory
                 .select(stay)
                 .from(booking)
@@ -49,7 +50,7 @@ public class BookingQuerydslImpl implements BookingQuerydsl {
         if (guestCount == null) {
             return null;
         }
-        return stay.roomInfo.guest.guestCount.goe(guestCount);
+        return stay.roomInfo.guestCount.goe(guestCount);
     }
 
     private BooleanExpression matchesCheckInAndCheckOut(LocalDate checkInDate, LocalDate checkOutDate) {
@@ -73,7 +74,7 @@ public class BookingQuerydslImpl implements BookingQuerydsl {
         TimeTemplate<LocalTime> bookedCheckOutTime = Expressions.timeTemplate(LocalTime.class,
                 "CAST({0} AS TIME)", booking.checkOut);
 
-      return  bookedCheckInDate.lt(checkOutDate)
+        return bookedCheckInDate.lt(checkOutDate)
                 .or(bookedCheckInDate.eq(checkOutDate).and(bookedCheckInTime.lt(booking.stay.checkOutTime)))
                 .and(bookedCheckOutDate.gt(checkInDate)
                         .or(bookedCheckOutDate.eq(checkInDate).and(bookedCheckOutTime.gt(booking.stay.checkInTime))));

@@ -1,6 +1,5 @@
 package com.airdnb.clone.domain.stay.controller.dto.request.edit;
 
-import com.airdnb.clone.domain.common.Guest;
 import com.airdnb.clone.domain.stay.entity.RoomInformation;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -29,7 +28,7 @@ public class RoomInfoEditRequest {
 
     public RoomInformation toRoomInformation() {
         return RoomInformation.builder()
-                .guest(Guest.builder().guestCount(guestCount).build())
+                .guestCount(guestCount)
                 .bedroomCount(bedroomCount)
                 .bedCount(bedCount)
                 .bathCount(bathCount)
