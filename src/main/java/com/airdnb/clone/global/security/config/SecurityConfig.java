@@ -49,7 +49,6 @@ public class SecurityConfig {
                 .addFilterAfter(new JwtTokenGeneratorFilter(jwtTokenService), BasicAuthenticationFilter.class)
                 .addFilterBefore(new JwtTokenValidatorFilter(jwtTokenService), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> requests
-//                        .requestMatchers("/api/v1/reservations/**").hasRole("USER")
                         .requestMatchers("/api/v1/**").permitAll()
                         .requestMatchers("/stays").permitAll()
                         .anyRequest().authenticated())

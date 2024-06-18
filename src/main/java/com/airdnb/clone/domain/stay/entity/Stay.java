@@ -19,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +85,23 @@ public class Stay extends BaseTimeEntity {
 
     @Embedded
     private RoomInformation roomInfo;
+
+    public void validateExceedGuest(Integer guestCount) {
+        roomInfo.validate(guestCount);
+    }
+
+    public Long calculateTotalRate(LocalDateTime checkIn, LocalDateTime checkOut) {
+        return fee.calculateTotalRate(checkIn, checkOut);
+    }
+
+    public void validateOpenStatus() {
+        if (this.status == Status.CLOSED) {
+            throw new IllegalArgumentException("해당 숙소는 문 닫았습니다.");
+        }
+        if (this.status == Status.REPAIR) {
+            throw new IllegalArgumentException("해당 숙소는 수리 중입니다.");
+        }
+    }
 
     public static class StayBuilder{}
 

@@ -1,11 +1,9 @@
 package com.airdnb.clone.domain.booking.entity;
 
 import com.airdnb.clone.domain.common.BaseTimeEntity;
-import com.airdnb.clone.domain.common.Guest;
 import com.airdnb.clone.domain.member.entity.Member;
 import com.airdnb.clone.domain.stay.entity.Stay;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -54,16 +52,16 @@ public class Booking extends BaseTimeEntity {
     @Column(name = "TOTAL_RATE")
     private Long totalRate;
 
-    @Embedded
-    private Guest guest;
+    @Column(name = "GUEST_COUNT")
+    private Integer guestCount;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS")
     private Status status = Status.PENDING;
 
-    public void changeGuest(Guest guest) {
-        this.guest = guest;
+    public void changeGuestCount(Integer guestCount) {
+        this.guestCount = guestCount;
     }
 
     public void confirm() {

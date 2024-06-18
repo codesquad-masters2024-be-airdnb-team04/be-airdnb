@@ -23,7 +23,7 @@ public class RoomInfoResponse {
 
     public static RoomInfoResponse of(RoomInformation roomInfo) {
         return RoomInfoResponse.builder()
-                .guestCount(roomInfo.getGuest().getGuestCount())
+                .guestCount(roomInfo.getGuestCount())
                 .bedroomCount(roomInfo.getBedroomCount())
                 .bedCount(roomInfo.getBedCount())
                 .bathCount(roomInfo.getBathCount())

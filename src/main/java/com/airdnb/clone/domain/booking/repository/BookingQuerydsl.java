@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface BookingQuerydsl {
 
-    List<Stay> findAvailableStays(LocalDate checkInDate, LocalDate checkOutDate, Integer minPrice, Integer maxPrice, Integer guestCount);
+    List<Stay> findAvailableStays(LocalDate checkInDate, LocalDate checkOutDate, Integer minPrice, Integer maxPrice,
+                                  Integer guestCount);
 }
