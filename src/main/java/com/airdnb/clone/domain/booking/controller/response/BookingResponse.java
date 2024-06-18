@@ -1,4 +1,4 @@
-package com.airdnb.clone.domain.booking.response;
+package com.airdnb.clone.domain.booking.controller.response;
 
 import com.airdnb.clone.domain.booking.entity.Booking;
 import java.time.LocalDateTime;

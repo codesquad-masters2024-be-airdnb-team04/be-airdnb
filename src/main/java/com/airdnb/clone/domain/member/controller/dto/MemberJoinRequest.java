@@ -2,12 +2,11 @@ package com.airdnb.clone.domain.member.controller.dto;
 
 import com.airdnb.clone.domain.member.entity.Member;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class MemberJoinRequest {
 
     @NotBlank

@@ -1,13 +1,12 @@
-package com.airdnb.clone.domain.booking.request;
+package com.airdnb.clone.domain.booking.controller.request;
 
 import com.airdnb.clone.domain.common.Guest;
 import jakarta.validation.constraints.Min;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
+@RequiredArgsConstructor
 public class BookingUpdateRequest {
 
     @Min(value = 1)

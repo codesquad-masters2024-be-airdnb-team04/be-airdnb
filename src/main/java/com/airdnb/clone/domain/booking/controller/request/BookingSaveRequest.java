@@ -1,18 +1,17 @@
-package com.airdnb.clone.domain.booking.request;
+package com.airdnb.clone.domain.booking.controller.request;
 
+import com.airdnb.clone.domain.booking.entity.Booking;
 import com.airdnb.clone.domain.booking.entity.Booking.BookingBuilder;
 import com.airdnb.clone.domain.common.Guest;
-import com.airdnb.clone.domain.booking.entity.Booking;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
+@RequiredArgsConstructor
 public class BookingSaveRequest {
 
     @NotNull

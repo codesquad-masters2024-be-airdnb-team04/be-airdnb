@@ -1,8 +1,9 @@
-package com.airdnb.clone.domain.booking;
+package com.airdnb.clone.domain.booking.controller;
 
-import com.airdnb.clone.domain.booking.request.BookingSaveRequest;
-import com.airdnb.clone.domain.booking.request.BookingUpdateRequest;
-import com.airdnb.clone.domain.booking.response.BookingResponse;
+import com.airdnb.clone.domain.booking.BookingService;
+import com.airdnb.clone.domain.booking.controller.request.BookingSaveRequest;
+import com.airdnb.clone.domain.booking.controller.request.BookingUpdateRequest;
+import com.airdnb.clone.domain.booking.controller.response.BookingResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;

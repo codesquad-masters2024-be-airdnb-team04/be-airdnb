@@ -2,14 +2,11 @@ package com.airdnb.clone.domain.stay.controller.dto.request.edit;
 
 import com.airdnb.clone.domain.stay.entity.Stay.Type;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class TypeEditRequest {
 
     @NotNull

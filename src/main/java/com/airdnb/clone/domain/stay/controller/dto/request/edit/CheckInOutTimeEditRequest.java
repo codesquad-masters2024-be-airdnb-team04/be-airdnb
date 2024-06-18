@@ -2,14 +2,11 @@ package com.airdnb.clone.domain.stay.controller.dto.request.edit;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalTime;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class CheckInOutTimeEditRequest {
 
     @NotNull

@@ -1,5 +1,6 @@
 package com.airdnb.clone.domain.stay.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -29,20 +30,19 @@ public class AvailableAmenity {
     @Column(name = "AVAILABLE_ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "STAY_ID", foreignKey = @ForeignKey(name = "FK_STAY_AVAILABLE_ID"))
     private Stay stay;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "AMENITY_ID", foreignKey = @ForeignKey(name = "FK_AMENITY_AVAILABLE_ID"))
     private Amenity amenity;
 
     public AvailableAmenity setStay(Stay stay) {
         if (this.stay != null) {
-            this.stay.getAmenities().remove(this);
+            this.stay.removeAmenity(this);
         }
-        stay.getAmenities().add(this);
-        this.stay = stay;
+        this.stay = stay.addAmenity(this);
 
         return this;
     }
@@ -51,6 +51,6 @@ public class AvailableAmenity {
         if (stay == null) {
             throw new IllegalStateException();
         }
-        stay.getAmenities().remove(this);
+        stay.removeAmenity(this);
     }
 }

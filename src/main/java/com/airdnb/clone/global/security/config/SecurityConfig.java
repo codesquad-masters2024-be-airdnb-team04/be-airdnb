@@ -23,7 +23,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableWebSecurity(debug = true) // FIXME: 개발 중에만 사용
+@EnableWebSecurity // FIXME: 개발 중에만 사용
 public class SecurityConfig {
 
     private final AirdnbOAuth2UserService userService;
@@ -49,7 +49,8 @@ public class SecurityConfig {
                 .addFilterAfter(new JwtTokenGeneratorFilter(jwtTokenService), BasicAuthenticationFilter.class)
                 .addFilterBefore(new JwtTokenValidatorFilter(jwtTokenService), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/api/v1/reservations/**").hasRole("USER")
+//                        .requestMatchers("/api/v1/reservations/**").hasRole("USER")
+                        .requestMatchers("/api/v1/**").permitAll()
                         .requestMatchers("/stays").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2Configurer -> oauth2Configurer

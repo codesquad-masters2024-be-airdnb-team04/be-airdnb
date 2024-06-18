@@ -35,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class StayService {
 
     private final StayRepository stayRepository;
@@ -82,7 +83,6 @@ public class StayService {
         return StayDetailResponse.of(stay);
     }
 
-    @Transactional(readOnly = true)
     public List<Stay> getStays() {
         return stayRepository.findAll();
     }

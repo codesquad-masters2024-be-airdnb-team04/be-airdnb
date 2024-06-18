@@ -1,4 +1,4 @@
-package com.airdnb.clone.config;
+package com.airdnb.clone.global.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

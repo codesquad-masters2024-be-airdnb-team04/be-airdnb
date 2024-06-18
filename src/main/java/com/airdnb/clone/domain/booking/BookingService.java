@@ -5,7 +5,7 @@ import com.airdnb.clone.domain.common.Guest;
 import com.airdnb.clone.domain.member.entity.Member;
 import com.airdnb.clone.domain.member.repository.MemberRepository;
 import com.airdnb.clone.domain.booking.repository.BookingRepository;
-import com.airdnb.clone.domain.booking.response.BookingResponse;
+import com.airdnb.clone.domain.booking.controller.response.BookingResponse;
 import com.airdnb.clone.domain.stay.entity.Stay;
 import com.airdnb.clone.domain.stay.repository.StayRepository;
 import lombok.RequiredArgsConstructor;

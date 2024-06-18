@@ -142,6 +142,18 @@ public class Stay extends BaseTimeEntity {
         return this;
     }
 
+    public Stay addAmenity(AvailableAmenity amenity) {
+        amenities.add(amenity);
+
+        return this;
+    }
+
+    public Stay removeAmenity(AvailableAmenity amenity) {
+        amenities.remove(amenity);
+
+        return this;
+    }
+
     public enum Status {
         OPEN, REPAIR, CLOSED
     }

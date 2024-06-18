@@ -26,9 +26,17 @@ public class StayFee {
     private Integer cleaningFee;
 
     public Long calculateTotalRate(LocalDateTime checkIn, LocalDateTime checkOut) {
+        validate(checkIn, checkOut);
+
         Duration duration = Duration.between(checkIn, checkOut);
         long totalDays = duration.toDays();
 
         return totalDays * perNight + cleaningFee;
+    }
+
+    private void validate(LocalDateTime checkIn, LocalDateTime checkOut) {
+        if (checkIn.isAfter(checkOut)) {
+            throw new IllegalArgumentException();
+        }
     }
 }
