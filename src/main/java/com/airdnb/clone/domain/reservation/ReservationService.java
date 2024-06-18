@@ -4,6 +4,7 @@ import com.airdnb.clone.domain.common.Guest;
 import com.airdnb.clone.domain.member.entity.Member;
 import com.airdnb.clone.domain.member.repository.MemberRepository;
 import com.airdnb.clone.domain.reservation.entity.Reservation;
+import com.airdnb.clone.domain.reservation.repository.ReservationRepository;
 import com.airdnb.clone.domain.reservation.response.ReservationResponse;
 import com.airdnb.clone.domain.stay.entity.Stay;
 import com.airdnb.clone.domain.stay.repository.StayRepository;

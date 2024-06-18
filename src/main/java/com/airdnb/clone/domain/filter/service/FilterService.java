@@ -1,10 +1,9 @@
 package com.airdnb.clone.domain.filter.service;
 
-import com.airdnb.clone.domain.filter.controller.request.AvailableStayRequest;
-import com.airdnb.clone.domain.reservation.ReservationRepository;
+import com.airdnb.clone.domain.reservation.repository.ReservationRepository;
 import com.airdnb.clone.domain.stay.controller.dto.response.StayDetailResponse;
 import com.airdnb.clone.domain.stay.entity.Stay;
-import com.airdnb.clone.domain.stay.repository.StayRepository;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,17 +14,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class FilterService {
 
-    private final StayRepository stayRepository;
     private final ReservationRepository reservationRepository;
 
-    public List<StayDetailResponse> getAvailableStays(AvailableStayRequest request) {
-        // 검색조건인 체크인, 체크아웃 시간을 기준으로 이용 불가능한 숙소의 ID 찾기
-        List<Long> unAvailableStayIds = reservationRepository.findUnavailableStayIdsByCheckInOut(
-                request.getCheckInDate(), request.getCheckOutDate());
+    public List<StayDetailResponse> getAvailableStays(LocalDate checkInDate, LocalDate checkOutDate, Integer minPrice,
+                                                      Integer maxPrice, Integer guestCount) {
 
-        // 이용불가능한 숙소ID, 1박 최소 및 최대 금액, 최대 게스트 수에 따라 필터링
-        List<Stay> availableStays = stayRepository.findAvailableStays(
-                unAvailableStayIds, request.getMinPrice(), request.getMaxPrice(), request.getGuestCount());
+        List<Stay> availableStays = reservationRepository.findAvailableStays(
+                checkInDate, checkOutDate, minPrice, maxPrice, guestCount);
 
         return availableStays.stream()
                 .map(StayDetailResponse::of)
