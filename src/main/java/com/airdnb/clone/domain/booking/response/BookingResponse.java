@@ -1,6 +1,6 @@
 package com.airdnb.clone.domain.booking.response;
 
-import com.airdnb.clone.domain.booking.entity.Reservation;
+import com.airdnb.clone.domain.booking.entity.Booking;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,15 +19,15 @@ public class BookingResponse {
     private final Long totalRate;
     private final Integer guestCount;
 
-    public static BookingResponse of(Reservation reservation) {
+    public static BookingResponse of(Booking booking) {
         return new BookingResponse(
-                reservation.getId(),
-                reservation.getMember().getId(),
-                reservation.getStay().getId(),
-                reservation.getCheckIn(),
-                reservation.getCheckOut(),
-                reservation.getTotalRate(),
-                reservation.getGuest().getGuestCount()
+                booking.getId(),
+                booking.getMember().getId(),
+                booking.getStay().getId(),
+                booking.getCheckIn(),
+                booking.getCheckOut(),
+                booking.getTotalRate(),
+                booking.getGuest().getGuestCount()
         );
     }
 }

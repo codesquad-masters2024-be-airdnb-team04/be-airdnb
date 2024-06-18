@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Table(name = "RESERVATION")
 @Entity
-public class Reservation extends BaseTimeEntity {
+public class Booking extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,8 +61,6 @@ public class Reservation extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS")
     private Status status = Status.PENDING;
-
-    public static class ReservationBuilder{}
 
     public void changeGuest(Guest guest) {
         this.guest = guest;

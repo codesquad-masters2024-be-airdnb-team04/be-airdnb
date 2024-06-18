@@ -1,9 +1,9 @@
 package com.airdnb.clone.domain.booking;
 
+import com.airdnb.clone.domain.booking.entity.Booking;
 import com.airdnb.clone.domain.common.Guest;
 import com.airdnb.clone.domain.member.entity.Member;
 import com.airdnb.clone.domain.member.repository.MemberRepository;
-import com.airdnb.clone.domain.booking.entity.Reservation;
 import com.airdnb.clone.domain.booking.repository.BookingRepository;
 import com.airdnb.clone.domain.booking.response.BookingResponse;
 import com.airdnb.clone.domain.stay.entity.Stay;
@@ -24,13 +24,13 @@ public class BookingService {
     private final StayRepository stayRepository;
 
     @Transactional
-    public BookingResponse create(Reservation.ReservationBuilder builder, Long stayId, Long hostId) {
+    public BookingResponse create(Booking.BookingBuilder builder, Long stayId, Long hostId) {
         Member member = memberRepository.findById(hostId)
                 .orElseThrow();
         Stay stay = stayRepository.findById(stayId)
                 .orElseThrow();
-        Reservation entity = builder.member(member).stay(stay).build();
-        Reservation saved = reservationRepository.save(entity);
+        Booking entity = builder.member(member).stay(stay).build();
+        Booking saved = reservationRepository.save(entity);
         return BookingResponse.of(saved);
     }
 
@@ -41,10 +41,10 @@ public class BookingService {
 
     @Transactional
     public void edit(Long id, Guest guest) {
-        Reservation reservation = reservationRepository.findById(id)
+        Booking booking = reservationRepository.findById(id)
                 .orElseThrow();
 
-        reservation.changeGuest(guest);
+        booking.changeGuest(guest);
     }
 
     public BookingResponse findById(Long id) {

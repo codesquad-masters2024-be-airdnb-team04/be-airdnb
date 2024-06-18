@@ -1,8 +1,8 @@
 package com.airdnb.clone.domain.booking.request;
 
+import com.airdnb.clone.domain.booking.entity.Booking.BookingBuilder;
 import com.airdnb.clone.domain.common.Guest;
-import com.airdnb.clone.domain.booking.entity.Reservation;
-import com.airdnb.clone.domain.booking.entity.Reservation.ReservationBuilder;
+import com.airdnb.clone.domain.booking.entity.Booking;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -33,8 +33,8 @@ public class BookingSaveRequest {
     @Min(value = 1)
     private final Integer guestCount;
 
-    public ReservationBuilder toBuilder() {
-        return Reservation.builder()
+    public BookingBuilder toBuilder() {
+        return Booking.builder()
                 .checkIn(checkIn)
                 .checkOut(checkOut)
                 .totalRate(totalRate)
