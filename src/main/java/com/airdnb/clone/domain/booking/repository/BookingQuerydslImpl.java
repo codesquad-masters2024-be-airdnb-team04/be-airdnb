@@ -74,7 +74,6 @@ public class BookingQuerydslImpl implements BookingQuerydsl {
                 "CAST({0} AS TIME)", booking.checkOut);
 
       return  bookedCheckInDate.lt(checkOutDate)
-              //                                             15시                  11시
                 .or(bookedCheckInDate.eq(checkOutDate).and(bookedCheckInTime.lt(booking.stay.checkOutTime)))
                 .and(bookedCheckOutDate.gt(checkInDate)
                         .or(bookedCheckOutDate.eq(checkInDate).and(bookedCheckOutTime.gt(booking.stay.checkInTime))));
