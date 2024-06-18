@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1")
 public class FilterController {
 
+    private static final long DEFAULT_INTERVAL_DAYS = 7L;
     private final FilterService filterService;
 
     @GetMapping("/stays")
