@@ -1,13 +1,13 @@
 package com.airdnb.clone.domain.filter.controller;
 
-import com.airdnb.clone.domain.filter.controller.request.AvailableStayRequest;
 import com.airdnb.clone.domain.filter.service.FilterService;
 import com.airdnb.clone.domain.stay.controller.dto.response.StayDetailResponse;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -17,8 +17,19 @@ public class FilterController {
 
     private final FilterService filterService;
 
-    @GetMapping("/filter")
-    public List<StayDetailResponse> getAvailableStays(@RequestBody AvailableStayRequest request) {
-        return filterService.getAvailableStays(request);
+    @GetMapping("/stays")
+    public List<StayDetailResponse> getAvailableStays(
+            @RequestParam(required = false) LocalDate checkInDate,
+            @RequestParam(required = false) LocalDate checkOutDate,
+            @RequestParam(required = false) Integer minPrice,
+            @RequestParam(required = false) Integer maxPrice,
+            @RequestParam(required = false) Integer guestCount) {
+        if (checkInDate == null) {
+            checkInDate = LocalDate.now();
+        }
+        if (checkOutDate == null) {
+            checkOutDate = LocalDate.now();
+        }
+        return filterService.getAvailableStays(checkInDate, checkOutDate, minPrice, maxPrice, guestCount);
     }
 }
