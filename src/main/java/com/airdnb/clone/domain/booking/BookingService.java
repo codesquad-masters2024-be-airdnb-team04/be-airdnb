@@ -8,6 +8,10 @@ import com.airdnb.clone.domain.member.entity.Member;
 import com.airdnb.clone.domain.member.repository.MemberRepository;
 import com.airdnb.clone.domain.stay.entity.Stay;
 import com.airdnb.clone.domain.stay.repository.StayRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.Persistence;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,14 +26,17 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final MemberRepository memberRepository;
     private final StayRepository stayRepository;
+    private final EntityManager em;
 
     @Transactional
     public BookingResponse create(BookingSaveRequest request) {
+
         // 요청한 예약이 예약 일정이 중복되면 예약이 불가
         Long bookedStayCount = bookingRepository.countBookedStay(request.getStayId(), request.getCheckIn(), request.getCheckOut());
         if (bookedStayCount > 0) {
             throw new IllegalArgumentException("예약 불가입니다.");
         }
+
 
         Member member = memberRepository.findById(request.getMemberId())
                 .orElseThrow();
@@ -47,8 +54,8 @@ public class BookingService {
                 .guestCount(request.getGuestCount())
                 .totalRate(findStay.calculateTotalRate(request.getCheckIn(), request.getCheckOut()))
                 .build();
-        Booking saved = bookingRepository.save(entity);
 
+        Booking saved = bookingRepository.save(entity);
         return BookingResponse.of(saved);
     }
 
