@@ -20,10 +20,10 @@ import lombok.NoArgsConstructor;
 public class StayFee {
 
     @Column(name = "PER_NIGHT")
-    private Integer perNight;
+    private Long perNight;
 
     @Column(name = "CLEANING_FEE")
-    private Integer cleaningFee;
+    private Long cleaningFee;
 
     public Long calculateTotalRate(LocalDateTime checkIn, LocalDateTime checkOut) {
         validate(checkIn, checkOut);

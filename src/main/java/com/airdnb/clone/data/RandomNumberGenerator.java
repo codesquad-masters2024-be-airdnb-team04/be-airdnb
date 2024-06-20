@@ -20,4 +20,8 @@ public interface RandomNumberGenerator {
     static Integer generateIntByInterval(int min, int max, int interval) {
         return (random.nextInt(max - min + 1) / interval) * interval;
     }
+
+    static Double generateDouble(double min, double max) {
+        return random.nextDouble(min, max);
+    }
 }

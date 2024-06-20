@@ -1,7 +1,5 @@
 package com.airdnb.clone.data;
 
-import java.util.stream.IntStream;
-
 public class DummyStayFeeGenerator {
 
     private static final long MIN_PER_NIGHT_RATE = 10_000L;
@@ -16,9 +14,5 @@ public class DummyStayFeeGenerator {
 
     public static Long generateCleaningFee() {
         return RandomNumberGenerator.generateLongByInterval(MIN_CLEANING_FEE, MAX_CLEANING_FEE, INTERVAL);
-    }
-
-    public static void main(String[] args) {
-        IntStream.range(1, 1000000).forEach(i -> System.out.println(generateCleaningFee()));
     }
 }
