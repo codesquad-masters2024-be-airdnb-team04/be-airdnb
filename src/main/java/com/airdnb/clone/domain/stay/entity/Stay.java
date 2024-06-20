@@ -43,7 +43,7 @@ public class Stay extends BaseTimeEntity {
     @Column(name = "STAY_ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "HOST_ID", foreignKey = @ForeignKey(name = "FK_MEMBER_STAY_ID"))
     private Member host;
 
@@ -127,6 +127,13 @@ public class Stay extends BaseTimeEntity {
 
     public Stay changeFee(StayFee fee) {
         this.fee = fee;
+
+        return this;
+    }
+
+
+    public Stay changePoint(Point point) {
+        this.point = point;
 
         return this;
     }

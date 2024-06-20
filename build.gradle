@@ -50,6 +50,9 @@ dependencies {
 	// 위도 경도
 	implementation 'org.hibernate:hibernate-spatial:6.5.2.Final'
 	implementation 'com.querydsl:querydsl-spatial:5.1.0'
+
+	// csv파일
+	implementation 'org.apache.commons:commons-csv:1.11.0'
 }
 
 tasks.named('test') {
