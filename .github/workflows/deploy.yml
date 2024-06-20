@@ -18,6 +18,10 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: YML파일 생성
+        run: echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.properties
+
+
       - name: 테스트 및 빌드하기
         run: |
           chmod +x ./gradlew
