@@ -37,7 +37,7 @@ public class SecurityConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration corsConfig = new CorsConfiguration();
-                        corsConfig.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
+                        corsConfig.setAllowedOrigins(Collections.singletonList("http://airdnb-team04.s3-website.ap-northeast-2.amazonaws.com"));
                         corsConfig.setAllowedMethods(Collections.singletonList("*"));
                         corsConfig.setAllowedHeaders(Collections.singletonList("*"));
                         corsConfig.setAllowCredentials(true);
@@ -53,7 +53,7 @@ public class SecurityConfig {
                         .requestMatchers("/stays").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2Configurer -> oauth2Configurer
-                        .loginPage("http://localhost:5173/login")
+                        .loginPage("http://airdnb-team04.s3-website.ap-northeast-2.amazonaws.com/login")
                         .successHandler(successHandler)
                         .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(userService))
                 );
