@@ -10,7 +10,7 @@ public interface SecurityConstants {
     String JWT_SUBJECT = "team04";
     String USERNAME = "username";
     String AUTHORITIES = "authorities";
-    String REDIRECT_URL = "http://localhost:5173";
+    String REDIRECT_URL = "http://airdnb-team04.s3-website.ap-northeast-2.amazonaws.com";
     int JWT_EXPIRATION_TIME = 1000 * 60 * 60 * 24;
     int REFRESH_JWT_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7;
     int COOKIE_EXPIRATION_TIME = 10;
