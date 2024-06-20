@@ -46,18 +46,24 @@ public class AirdnbOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         DefaultOAuth2User oAuth2User = (DefaultOAuth2User) authentication.getPrincipal();
         Map<String, Object> oAuth2UserAttributes = oAuth2User.getAttributes();
         String id = oAuth2User.getName(); // int 타입 고유 아이디
+        String username = "";
         String profileImage = "";
 
         // 프로필 이미지 분기
         String registrationId = ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId();
         if (registrationId.equalsIgnoreCase("google")) {
             profileImage = oAuth2UserAttributes.get("picture").toString();
+            username = oAuth2UserAttributes.get("name").toString();
         }
         if (registrationId.equalsIgnoreCase("github")) {
             profileImage = oAuth2UserAttributes.get("avatar_url").toString();
+            username = oAuth2UserAttributes.get("name").toString();
+        }
+        if (registrationId.equalsIgnoreCase("kakao")) {
+            profileImage = oAuth2UserAttributes.get("profile_image").toString();
+            username = oAuth2UserAttributes.get("nickname").toString();
         }
 
-        String username = oAuth2UserAttributes.get("name").toString();
         String authorities = jwtTokenService.populateAuthorities(authentication.getAuthorities());
 
         return JwtClaimsBuilder.builder()
