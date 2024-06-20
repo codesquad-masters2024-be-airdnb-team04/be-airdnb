@@ -36,8 +36,11 @@ public class AirdnbOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         Cookie jwtCookie = createJwtCookie(JWT_ACCESS_COOKIE_KEY, jwt);
         Cookie refreshCookie = createJwtCookie(JWT_REFRESH_COOKIE_KEY, refreshToken);
 
-        response.addCookie(jwtCookie);
-        response.addCookie(refreshCookie);
+        response.addHeader("Set-Cookie", String.format("%s=%s; Path=%s; Max-Age=%d; SameSite=None",
+                jwtCookie.getName(), jwtCookie.getValue(), jwtCookie.getPath(), jwtCookie.getMaxAge()));
+
+        response.addHeader("Set-Cookie", String.format("%s=%s; Path=%s; Max-Age=%d; SameSite=None",
+                refreshCookie.getName(), refreshCookie.getValue(), refreshCookie.getPath(), refreshCookie.getMaxAge()));
 
         response.sendRedirect(REDIRECT_URL);
     }
