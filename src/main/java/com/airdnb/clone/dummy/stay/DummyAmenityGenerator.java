@@ -1,4 +1,4 @@
-package com.airdnb.clone.data;
+package com.airdnb.clone.dummy.stay;
 
 import java.util.Arrays;
 import java.util.List;

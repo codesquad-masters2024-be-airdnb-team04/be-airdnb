@@ -1,4 +1,4 @@
-package com.airdnb.clone.data;
+package com.airdnb.clone.dummy.stay;
 
 import com.airdnb.clone.domain.stay.entity.Stay.Type;
 import java.util.Random;

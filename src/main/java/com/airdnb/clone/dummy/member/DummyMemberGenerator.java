@@ -1,4 +1,4 @@
-package com.airdnb.clone.data;
+package com.airdnb.clone.dummy.member;
 
 import com.airdnb.clone.domain.member.entity.Member;
 

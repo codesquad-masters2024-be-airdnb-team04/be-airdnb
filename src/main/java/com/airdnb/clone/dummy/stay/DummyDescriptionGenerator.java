@@ -1,4 +1,4 @@
-package com.airdnb.clone.data;
+package com.airdnb.clone.dummy.stay;
 
 public class DummyDescriptionGenerator {
     private static final String name = "설명";

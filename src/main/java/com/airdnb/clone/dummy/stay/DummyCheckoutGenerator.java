@@ -1,4 +1,4 @@
-package com.airdnb.clone.data;
+package com.airdnb.clone.dummy.stay;
 
 import java.time.LocalTime;
 import java.util.List;

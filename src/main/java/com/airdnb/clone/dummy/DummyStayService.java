@@ -1,9 +1,10 @@
-package com.airdnb.clone.data;
+package com.airdnb.clone.dummy;
 
 import com.airdnb.clone.domain.member.entity.Member;
 import com.airdnb.clone.domain.member.repository.MemberRepository;
 import com.airdnb.clone.domain.stay.entity.Stay;
 import com.airdnb.clone.domain.stay.repository.StayRepository;
+import com.airdnb.clone.dummy.member.DummyMemberGenerator;
 import jakarta.annotation.PostConstruct;
 import java.io.FileWriter;
 import java.io.IOException;

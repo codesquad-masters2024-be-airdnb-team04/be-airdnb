@@ -1,7 +1,6 @@
-package com.airdnb.clone.data;
+package com.airdnb.clone.dummy;
 
 import com.airdnb.clone.domain.stay.entity.Stay;
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.commons.csv.CSVFormat;

@@ -1,4 +1,6 @@
-package com.airdnb.clone.data;
+package com.airdnb.clone.dummy.stay;
+
+import com.airdnb.clone.dummy.RandomNumberGenerator;
 
 public class DummyStayFeeGenerator {
 
