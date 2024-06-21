@@ -9,9 +9,6 @@ import com.airdnb.clone.domain.member.repository.MemberRepository;
 import com.airdnb.clone.domain.stay.entity.Stay;
 import com.airdnb.clone.domain.stay.repository.StayRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.LockModeType;
-import jakarta.persistence.Persistence;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,7 +33,6 @@ public class BookingService {
         if (bookedStayCount > 0) {
             throw new IllegalArgumentException("예약 불가입니다.");
         }
-
 
         Member member = memberRepository.findById(request.getMemberId())
                 .orElseThrow();
