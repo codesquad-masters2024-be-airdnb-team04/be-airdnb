@@ -3,7 +3,6 @@ package com.airdnb.clone.domain.oauth2;
 import static com.airdnb.clone.global.security.constants.SecurityConstants.COOKIE_EXPIRATION_TIME;
 import static com.airdnb.clone.global.security.constants.SecurityConstants.JWT_ACCESS_COOKIE_KEY;
 import static com.airdnb.clone.global.security.constants.SecurityConstants.JWT_REFRESH_COOKIE_KEY;
-import static com.airdnb.clone.global.security.constants.SecurityConstants.REDIRECT_URL;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -13,6 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
@@ -24,6 +24,9 @@ import org.springframework.stereotype.Component;
 public class AirdnbOAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtTokenService jwtTokenService;
+
+    @Value("#{environment['allowOrigin']}")
+    private String allowOrigin;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -39,7 +42,7 @@ public class AirdnbOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         response.addCookie(jwtCookie);
         response.addCookie(refreshCookie);
 
-        response.sendRedirect(REDIRECT_URL);
+        response.sendRedirect(allowOrigin);
     }
 
     private Map<String, Object> createClaims(Authentication authentication) {
