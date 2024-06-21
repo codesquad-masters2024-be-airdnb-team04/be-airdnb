@@ -25,35 +25,36 @@ public class DummyStayService {
     @Autowired
     private MemberRepository memberRepository;
 
+    // 더미데이터 만들지 않을 때는 주석 풀지 않기
     @PostConstruct
     public void init() {
-        List<Member> members = IntStream.range(0, 10000)
-                .mapToObj(i -> DummyMemberGenerator.generate())
-                .collect(Collectors.toList());
-        memberRepository.saveAll(members);
-
-        List<Member> allMembers = memberRepository.findAll();
-
-        List<Stay> stays = IntStream.range(0, 200000)
-                .mapToObj(i -> {
-                    if (0 <= i && i <= 60000) {
-                        return DummyStayGenerator.generateJeju();
-                    }
-                    else if (60001 <= i && i <= 100000) {
-                        return DummyStayGenerator.generateBusan();
-                    }
-                    else if (100001 <= i && i <= 140000) {
-                        return DummyStayGenerator.generateGangwon();
-                    }
-                    return DummyStayGenerator.generate();
-                })
-                .collect(Collectors.toList());
-
-        try {
-            writeStaysToCSV(allMembers, stays, "stays.csv");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        List<Member> members = IntStream.range(0, 10000)
+//                .mapToObj(i -> DummyMemberGenerator.generate())
+//                .collect(Collectors.toList());
+//        memberRepository.saveAll(members);
+//
+//        List<Member> allMembers = memberRepository.findAll();
+//
+//        List<Stay> stays = IntStream.range(0, 200000)
+//                .mapToObj(i -> {
+//                    if (0 <= i && i <= 60000) {
+//                        return DummyStayGenerator.generateJeju();
+//                    }
+//                    else if (60001 <= i && i <= 100000) {
+//                        return DummyStayGenerator.generateBusan();
+//                    }
+//                    else if (100001 <= i && i <= 140000) {
+//                        return DummyStayGenerator.generateGangwon();
+//                    }
+//                    return DummyStayGenerator.generate();
+//                })
+//                .collect(Collectors.toList());
+//
+//        try {
+//            writeStaysToCSV(allMembers, stays, "stays.csv");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private void writeStaysToCSV(List<Member> allMembers, List<Stay> stays, String fileName) throws IOException {
