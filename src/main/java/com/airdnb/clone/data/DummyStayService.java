@@ -1,5 +1,7 @@
 package com.airdnb.clone.data;
 
+import com.airdnb.clone.domain.member.entity.Member;
+import com.airdnb.clone.domain.member.repository.MemberRepository;
 import com.airdnb.clone.domain.stay.entity.Stay;
 import com.airdnb.clone.domain.stay.repository.StayRepository;
 import jakarta.annotation.PostConstruct;
@@ -19,37 +21,27 @@ public class DummyStayService {
     @Autowired
     private StayRepository stayRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     @PostConstruct
     public void init() {
-        List<Stay> stays = IntStream.range(0, 100000)
-                .mapToObj(i -> {
-                    if (0 <= i && i <= 30000) {
-                        return DummyStayGenerator.generateJeju();
-                    }
-                    else if (30001 <= i && i <= 50000) {
-                        return DummyStayGenerator.generateBusan();
-                    }
-                    else if (50001 <= i && i <= 100000) {
-                        return DummyStayGenerator.generateGangwon();
-                    }
-                    else return DummyStayGenerator.generate();
-                })
+        List<Member> members = IntStream.range(0, 10000)
+                .mapToObj(i -> DummyMemberGenerator.generate())
                 .collect(Collectors.toList());
+        memberRepository.saveAll(members);
 
-        stayRepository.saveAll(stays);
-    }
+        List<Member> allMembers = memberRepository.findAll();
 
-
-    public static void main(String[] args) {
-        List<Stay> stays = IntStream.range(0, 200)
+        List<Stay> stays = IntStream.range(0, 200000)
                 .mapToObj(i -> {
-                    if (0 <= i && i <= 60) {
+                    if (0 <= i && i <= 60000) {
                         return DummyStayGenerator.generateJeju();
                     }
-                    if (61 <= i && i <= 80) {
+                    else if (60001 <= i && i <= 100000) {
                         return DummyStayGenerator.generateBusan();
                     }
-                    if (81 <= i && i <= 100) {
+                    else if (100001 <= i && i <= 140000) {
                         return DummyStayGenerator.generateGangwon();
                     }
                     return DummyStayGenerator.generate();
@@ -57,20 +49,28 @@ public class DummyStayService {
                 .collect(Collectors.toList());
 
         try {
-            writeStaysToCSV(stays, "stays.csv");
+            writeStaysToCSV(allMembers, stays, "stays.csv");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
-    private static void writeStaysToCSV(List<Stay> stays, String fileName) throws IOException {
+    private void writeStaysToCSV(List<Member> allMembers, List<Stay> stays, String fileName) throws IOException {
         try (FileWriter out = new FileWriter(fileName);
              CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT
-                     .withHeader("ID", "Location", "Name", "Description"))) {
+                     .withHeader("BATH_COUNT", "BEDROOM_COUNT", "BED_COUNT", "CHECK_IN_TIME"
+                             , "CHECK_OUT_TIME", "GUEST_COUNT", "CLEANING_FEE", "HOST_ID"
+                             , "PER_NIGHT", "ALIAS", "DESCRIPTION", "@lan", "@lon"))) {
 
+            int count = 0;
             for (Stay stay : stays) {
-                printer.printRecord(stay.getPoint().getY(), stay.getPoint().getX(), stay.getDescription());
+                printer.printRecord(stay.getRoomInfo().getBathCount(), stay.getRoomInfo().getBedroomCount(), stay.getRoomInfo().getBedCount(),
+                        stay.getCheckInTime(), stay.getCheckOutTime(), stay.getRoomInfo().getGuestCount(),
+                        stay.getFee().getCleaningFee(), allMembers.get(count++).getId(), stay.getFee().getPerNight(),
+                        stay.getAlias(), stay.getDescription(), stay.getPoint().getY(), stay.getPoint().getX());
+                if (count == 9999) {
+                    count = 0;
+                }
             }
         }
     }

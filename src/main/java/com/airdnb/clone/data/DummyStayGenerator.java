@@ -11,7 +11,6 @@ public class DummyStayGenerator {
     public static Stay generate() {
         return Stay.builder()
                 .alias(DummyAliasGenerator.generate())
-                .host(DummyMemberGenerator.generate())
                 .checkInTime(DummyCheckInGenerator.generate())
                 .checkOutTime(DummyCheckoutGenerator.generate())
                 .description(DummyDescriptionGenerator.generate())
@@ -33,7 +32,6 @@ public class DummyStayGenerator {
     public static Stay generateBusan() {
         return Stay.builder()
                 .alias(DummyAliasGenerator.generate())
-                .host(DummyMemberGenerator.generate())
                 .checkInTime(DummyCheckInGenerator.generate())
                 .checkOutTime(DummyCheckoutGenerator.generate())
                 .description(DummyDescriptionGenerator.generate())
@@ -55,7 +53,6 @@ public class DummyStayGenerator {
     public static Stay generateJeju() {
         return Stay.builder()
                 .alias(DummyAliasGenerator.generate())
-                .host(DummyMemberGenerator.generate())
                 .checkInTime(DummyCheckInGenerator.generate())
                 .checkOutTime(DummyCheckoutGenerator.generate())
                 .description(DummyDescriptionGenerator.generate())
@@ -77,7 +74,6 @@ public class DummyStayGenerator {
     public static Stay generateGangwon() {
         return Stay.builder()
                 .alias(DummyAliasGenerator.generate())
-                .host(DummyMemberGenerator.generate())
                 .checkInTime(DummyCheckInGenerator.generate())
                 .checkOutTime(DummyCheckoutGenerator.generate())
                 .description(DummyDescriptionGenerator.generate())
