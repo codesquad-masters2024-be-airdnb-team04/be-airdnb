@@ -12,6 +12,6 @@ public class DummyCheckInGenerator {
             LocalTime.of(17,0));
 
     public static LocalTime generate() {
-        return checkInTimes.get(new Random().nextInt(0, 4));
+        return checkInTimes.get(new Random().nextInt(0, checkInTimes.size()));
     }
 }

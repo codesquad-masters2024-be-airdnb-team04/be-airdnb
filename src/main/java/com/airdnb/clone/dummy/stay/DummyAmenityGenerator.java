@@ -1,5 +1,6 @@
 package com.airdnb.clone.dummy.stay;
 
+import com.airdnb.clone.dummy.RandomNumberGenerator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -10,8 +11,8 @@ public class DummyAmenityGenerator {
     public static List<DummyAmenity> generate() {
         List<DummyAmenity> list = Arrays.stream(DummyAmenity.values())
                 .collect(Collectors.toList());
-        int first = new Random().nextInt(0, 16);
-        int second = new Random().nextInt(0, 16);
+        int first = RandomNumberGenerator.generateInt(0, DummyAmenity.values().length);
+        int second = new Random().nextInt(0, DummyAmenity.values().length);
 
         return list.subList(first, second);
     }
