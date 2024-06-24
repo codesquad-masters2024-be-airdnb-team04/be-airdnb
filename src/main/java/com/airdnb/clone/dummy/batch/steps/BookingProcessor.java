@@ -5,6 +5,7 @@ import com.airdnb.clone.domain.booking.entity.Booking.Status;
 import com.airdnb.clone.domain.member.repository.MemberRepository;
 import com.airdnb.clone.domain.stay.entity.Stay;
 import com.airdnb.clone.dummy.RandomNumberGenerator;
+import com.airdnb.clone.dummy.stay.DummyTravelerGenerator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,6 +24,11 @@ public class BookingProcessor implements ItemProcessor<Stay, List<Booking>> {
 
     private static final AtomicInteger CURRENT_INDEX = new AtomicInteger(0);
     private static final int INCREMENT_STEP = 1;
+    public static final int PEAK_SEASON_START = 6;
+    public static final int PEAK_SEASON_END = 8;
+    public static final int START_OF_MONTH = 1;
+    public static final int END_OF_MONTH = 27;
+    public static final int ONE_WEEK = 7;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -44,37 +50,36 @@ public class BookingProcessor implements ItemProcessor<Stay, List<Booking>> {
 
         List<Booking> bookings = new ArrayList<>();
 
-        int step = 1;
-        for (int i = 6; i <= 8; i++) {
-            int currentMonth = i;
-            for (int j = 1; j <= 27; j += step + 1) {
-                int nextCheckInDay = j;
-                if (j % 7 == 1) {
+        int step;
+        for (int month = PEAK_SEASON_START; month <= PEAK_SEASON_END; month++) {
+            for (int checkInDay = START_OF_MONTH; checkInDay <= END_OF_MONTH; checkInDay += step + START_OF_MONTH) {
+                if (checkInDay % ONE_WEEK == 1) {
                     step = 2;
                 } else {
                     step = 1;
                 }
-                int nextCheckOutDat = j + step;
-                LocalDateTime checkIn = LocalDate.of(2024, currentMonth, nextCheckInDay)
-                        .atTime((stay.getCheckInTime()));
-                LocalDateTime checkOut = LocalDate.of(2024, currentMonth, nextCheckOutDat)
-                        .atTime((stay.getCheckOutTime()));
+                int checkOutDay = checkInDay + step;
+                LocalDateTime checkIn = LocalDate.of(2024, month, checkInDay).atTime((stay.getCheckInTime()));
+                LocalDateTime checkOut = LocalDate.of(2024, month, checkOutDay).atTime((stay.getCheckOutTime()));
 
-                Booking booking = Booking.builder()
-                        .member(memberRepository.findById(RandomNumberGenerator.generateLong(1, 25000 - 1))
-                                .orElseThrow())
-                        .stay(stay)
-                        .status(Status.RESERVED)
-                        .guestCount(RandomNumberGenerator.generateInt(1, 3))
-                        .totalRate(RandomNumberGenerator.generateLongByInterval(1_000_000L, 10_000_000L, 10_000))
-                        .checkIn(checkIn)
-                        .checkOut(checkOut)
-                        .build();
+                Booking booking = createBooking(stay, checkIn, checkOut);
 
                 bookings.add(booking);
             }
         }
 
         return bookings;
+    }
+
+    private Booking createBooking(Stay stay, LocalDateTime checkIn, LocalDateTime checkOut) {
+        return Booking.builder()
+                .member(memberRepository.findById(RandomNumberGenerator.generateLong(1, 25000)).orElseThrow())
+                .stay(stay)
+                .status(Status.RESERVED)
+                .guestCount(DummyTravelerGenerator.generate())
+                .totalRate(stay.getFee().calculateTotalRate(checkIn, checkOut))
+                .checkIn(checkIn)
+                .checkOut(checkOut)
+                .build();
     }
 }
