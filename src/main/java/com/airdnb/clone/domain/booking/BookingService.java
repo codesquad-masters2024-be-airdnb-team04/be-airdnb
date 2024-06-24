@@ -9,6 +9,7 @@ import com.airdnb.clone.domain.member.repository.MemberRepository;
 import com.airdnb.clone.domain.stay.entity.Stay;
 import com.airdnb.clone.domain.stay.repository.StayRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,8 +52,16 @@ public class BookingService {
                 .totalRate(findStay.calculateTotalRate(request.getCheckIn(), request.getCheckOut()))
                 .build();
 
-        Booking saved = bookingRepository.save(entity);
-        return BookingResponse.of(saved);
+        try {
+            Booking saved = bookingRepository.save(entity);
+            return BookingResponse.of(saved);
+        } catch (PersistenceException error) {
+            // TODO : 예외 처리 공부하기
+//            PersistenceException: JPA에서 발생하는 예외의 상위 클래스입니다. 다양한 데이터베이스 관련 예외를 포괄합니다.
+//            ConstraintViolationException: Hibernate에서 발생하는 제약 조건 위반 예외입니다.
+//            DataAccessException: Spring Data JPA에서 발생하는 데이터 접근 예외의 상위 클래스입니다.
+            throw new IllegalArgumentException();
+        }
     }
 
     @Transactional
