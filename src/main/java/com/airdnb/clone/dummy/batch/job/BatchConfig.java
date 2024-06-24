@@ -5,7 +5,6 @@ import com.airdnb.clone.domain.member.entity.Member;
 import com.airdnb.clone.domain.stay.entity.Stay;
 import com.airdnb.clone.dummy.batch.steps.BookingProcessor;
 import com.airdnb.clone.dummy.batch.steps.DummyMemberSavingTasklet;
-import com.airdnb.clone.dummy.batch.steps.MemberJobExecutionListener;
 import com.airdnb.clone.dummy.stay.DummyStayGenerator;
 import jakarta.persistence.EntityManagerFactory;
 import java.sql.Time;
@@ -47,7 +46,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class BatchConfig {
 
     private final DummyMemberSavingTasklet dummyMemberSavingTasklet;
-    private final MemberJobExecutionListener memberJobExecutionListener;
+    private final BookingProcessor bookingProcessor;
     private final EntityManagerFactory entityManagerFactory;
     private final DataSource dataSource;
 
@@ -175,6 +174,7 @@ public class BatchConfig {
                     ps.setTimestamp(15, Timestamp.valueOf(LocalDateTime.now()));
                     ps.setTimestamp(16, Timestamp.valueOf(LocalDateTime.now()));
                 })
+                // TODO: 성능 비교 분석
 //                .sql("INSERT INTO STAY (HOST_ID, ALIAS, DESCRIPTION, POINT, TYPE, STATUS, BATH_COUNT, BEDROOM_COUNT, BED_COUNT, GUEST_COUNT, CHECK_IN_TIME, CHECK_OUT_TIME, PER_NIGHT, CLEANING_FEE, CREATED_AT, UPDATED_AT) "
 //                        + "VALUES (:hostId, :alias, :description, ST_PointFromText(:point, 4326), :type, :status, :bathCount, :bedroomCount, :bedCount, :guestCount, :checkInTime, :checkOutTime, :perNight, :cleaningFee, :createdAt, :updatedAt)")
 //                .itemSqlParameterSourceProvider((stay) -> {
@@ -201,21 +201,20 @@ public class BatchConfig {
     }
 
     @Bean
+    @Qualifier(value = "BookingSavingJob")
     public Job saveBookingJob(JobRepository jobRepository, Step bookingSaveStep) {
         return new JobBuilder("BookingSavingJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .listener(memberJobExecutionListener)
                 .start(bookingSaveStep)
                 .build();
     }
 
     @Bean
-    @StepScope
     public Step bookingSaveStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         return new StepBuilder("BookingSavingStep", jobRepository)
                 .<Stay, List<Booking>>chunk(1000, transactionManager)
                 .reader(stayReader())
-                .processor(bookingProcessor())
+                .processor(bookingProcessor)
                 .writer(saveBookingByJdbc(jdbcBookingWriter()))
                 .build();
     }
@@ -228,12 +227,6 @@ public class BatchConfig {
                 .entityManagerFactory(entityManagerFactory)
                 .queryString("SELECT s FROM Stay s")
                 .build();
-    }
-
-    @Bean
-    @StepScope
-    public ItemProcessor<Stay, List<Booking>> bookingProcessor() {
-        return new BookingProcessor();
     }
 
     @Bean

@@ -61,7 +61,7 @@ public class BatchController {
     }
 
     @PostMapping("/bookings/save")
-    public ResponseEntity<String> runSaveBooking(@RequestParam Map<String, String> params) {
+    public ResponseEntity<String> runSaveBooking(@RequestParam(required = false) Map<String, String> params) {
         try {
             Properties properties = new Properties();
             properties.put(UNIQUE_PARAM_ID, LocalDateTime.now().toString()); // 파라미터에 유니크 아이디 부여
