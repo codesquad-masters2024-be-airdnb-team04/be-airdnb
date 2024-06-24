@@ -109,14 +109,14 @@ public class BatchConfig {
                 .mapToObj(i -> {
                     if (currentNumber.getAndAdd(incrementStep) < requestCount * jejuRatio) {
                         return DummyStayGenerator.generateJeju(member);
-                    } else if (currentNumber.getAndAdd(incrementStep) < requestCount * (jejuRatio + busanRatio)) {
-                        return DummyStayGenerator.generateBusan(member);
-                    } else if (currentNumber.getAndAdd(incrementStep) < requestCount * (jejuRatio + busanRatio
-                            + gangwonRatio)) {
-                        return DummyStayGenerator.generateGangwon(member);
-                    } else {
-                        return DummyStayGenerator.generateKorea(member);
                     }
+                    if (currentNumber.get() < requestCount * (jejuRatio + busanRatio)) {
+                        return DummyStayGenerator.generateBusan(member);
+                    }
+                    if (currentNumber.get() < requestCount * (jejuRatio + busanRatio + gangwonRatio)) {
+                        return DummyStayGenerator.generateGangwon(member);
+                    }
+                    return DummyStayGenerator.generateKorea(member);
                 })
                 .toList();
     }
