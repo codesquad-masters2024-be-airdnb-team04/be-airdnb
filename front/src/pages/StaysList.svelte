@@ -1,10 +1,94 @@
 <script>
-    import Header from "../components/Header.svelte";
-    import MyNaverMap from "../components/MyNaverMap.svelte";
-    import Footer from "../components/Footer.svelte";
-    import StayDetail from "../components/StayDetail.svelte";
+  import Header from "../components/Header.svelte";
+  import MyNaverMap from "../components/MyNaverMap.svelte";
+  import Footer from "../components/Footer.svelte";
+  import StayDetail from "../components/StayDetail.svelte";
+  import {filters} from "../store/filter.js";
+  import {currentStaysPage, loadingStay, stays, staysPageLock} from "../store/stays.js";
+  import {get} from "svelte/store";
+  import {onDestroy, onMount} from "svelte";
+  import StayItem from "./StayItem.svelte";
+  import Modal from "../components/Modal.svelte";
+  import StayLoading from "../components/StayLoading.svelte";
 
-    const mockList = Array.from({ length: 20 }, (_, i) => i + 1);
+  let stayList = [];
+  let modalStatus = false;
+
+  /* 스크롤 정보 */
+  let element
+  let component = document.querySelector('#item');
+  $: { // 반응형 기호 사용 => 스크롤할 때, 브라우저 크기가 변할 때마다 돔의 높이 정보, 스크롤 위치가 변하기 때문
+    if (component) {
+      element = component
+      element.addEventListener('scroll', onScroll)
+      element.addEventListener('resize', onScroll)
+    }
+  }
+
+  const onScroll = (e) => {
+
+    const scrollHeight = e.target.scrollHeight // 브라우저 스크롤 높이
+    const clientHeight = e.target.clientHeight // 화면 높이
+    const scrollTop = e.target.scrollTop // 현재 스크롤 위치
+    const realHeight = scrollHeight - clientHeight // 실제 높이
+    const triggerHeight = realHeight * 0.7
+
+    const triggerComputed = () => {
+      return scrollTop > triggerHeight
+    }
+
+    // 현재 페이지가 전체페이지보다 작거나 같으면 true 리턴
+    const countCheck = () => {
+      return $stays.hasNext;
+    }
+
+    // countCheck를 이용해 현재페이지가 페이지 마지막일 경우 staysPageLock을 true로 해서 이를 통해 더이상 페이지가 증가하지 않음
+    if (countCheck) {
+      staysPageLock.set(true)
+    }
+
+    const scrollTrigger = () => {
+      return triggerComputed() && countCheck() && $staysPageLock
+    }
+
+    if (scrollTrigger()) {
+      const lastButtonChild = document.querySelector('#item button:last-child');
+      console.log('gogogogogo', lastButtonChild.id)
+      if (lastButtonChild) {
+        currentStaysPage.increPage(lastButtonChild.id);
+      }
+    }
+  }
+
+  const offBookingMode = () => {
+    stays.closeBookingPopup();
+  }
+
+  const handleModal = (status) => {
+    modalStatus = status
+  }
+
+  onMount(() => {
+    if (get(stays).stayList.length === 0) {
+      console.log('no stay list. start fetch no search condition')
+      filters.searchWithCondition();
+    }
+    stayList = get(stays).stayList;
+    console.log('stayList:', stayList)
+
+    // 스크롤 이벤트 핸들러를 추가합니다.
+    component = document.querySelector('#item');
+    if (component) {
+      component.addEventListener('scroll', onScroll);
+    }
+  })
+
+  // 컴포넌트가 언마운트될 때 이벤트 핸들러를 제거합니다.
+  onDestroy(() => {
+    if (component) {
+      component.removeEventListener('scroll', onScroll);
+    }
+  });
 </script>
 
 <Header scrollMode={false}/>
@@ -17,13 +101,13 @@
             <div class="flex gap-2 text-[14px] text-gray-800">
                 <span>300개 이상의 숙소</span>
                 <span>·</span>
-                <span>5월 12일 - 5월 18일</span>
+                <span>{get(filters).checkInDate} ~ {get(filters).checkOutDate}</span>
                 <span>·</span>
-                <span>₩100,000</span>
+                <span>₩{get(filters).rateRange[0].toLocaleString('ko-KR')}</span>
                 <span>~</span>
-                <span>₩100,000</span>
+                <span>₩{get(filters).rateRange[1].toLocaleString('ko-KR')}</span>
                 <span>·</span>
-                <span>게스트 3명</span>
+                <span>게스트 {get(filters).traveler}명</span>
             </div>
             <div>
                 <div class="font-bold text-black text-3xl">
@@ -32,64 +116,37 @@
             </div>
 
             <!--  숙소 리스트 -->
-            <div class="flex flex-col gap-2 max-h-[1000px] items-start justify-start pt-2 space-y-3 overflow-y-scroll">
-                {#each mockList as mock}
-                <div class="border-b pb-4 pr-4">
-                    <!--                예시 1-->
-                    <button class="relative flex gap-4">
-                        <div class="w-[330px] min-w-[280px] h-[220px] min-h-[200px]">
-                            <img class="rounded-3xl" src="/assets/seoul.jpg" alt="이미지1">
-                        </div>
-                        <div class="flex flex-col items-start gap-1 py-1">
-                            <div class="text-gray-500/80 text-[15px]">
-                                서초구의 아파트 전체
-                            </div>
-                            <div class="text-gray-800 text-[1rem] truncate">
-                                Spacious and Comfortable cozy house #4
-                            </div>
-                            <div class="flex flex-wrap pr-[4rem] text-gray-500/80 text-[14px]">
-                                <span>최대 인원 3명</span>
-                                <span> ∙ </span>
-                                <span>원룸</span>
-                                <span> ∙ </span>
-                                <span>침대 1개</span>
-                                <span> ∙ </span>
-                                <span>욕실 1개</span>
-                                <span> ∙ </span>
-                                <span>주방</span>
-                                <span> ∙ </span>
-                                <span>무선 인터넷</span>
-                                <span> ∙ </span>
-                                <span>에어컨</span>
-                                <span> ∙ </span>
-                                <span>헤어드라이어</span>
-                            </div>
-                            <div class="absolute flex flex-col bottom-0 right-0 space-y-1">
-                                <div class="flex gap-1 justify-between">
-                                    <span class="font-bold">₩ 81,590</span>
-                                    <div class="text-gray-800/80">/</div>
-                                    <div class="text-gray-800/80">박</div>
-                                </div>
-                                <div class="text-[14px] text-gray-500/80 underline hover:text-gray-700">
-                                    <span>총액 ₩ 1,493,150</span>
-                                </div>
-                            </div>
-                        </div>
-                    </button>
-                </div>
-                {/each}
+            <div id="item" on:scroll={onScroll} class="flex flex-col gap-2 max-h-[1000px] items-start justify-start pt-2 space-y-3 overflow-y-scroll">
+
+                {#if stayList.length !== 0}
+                    {#each stayList as stay}
+                        <StayItem stay={stay}/>
+                    {/each}
+                {/if}
+
+                {#if $loadingStay}
+                    <StayLoading/>
+                {/if}
+
             </div>
         </div>
     </div>
 
-    <StayDetail />
+    {#if $stays.bookingPopup !== ''}
+        <div class="overlay-dark" on:click={() => offBookingMode()}></div>
+        <StayDetail on:modalStatus={e => handleModal(e.detail)}/>
+    {/if}
+
+    {#if modalStatus === true}
+        <Modal on:modalStatus={e => handleModal(e.detail)}/>
+    {/if}
 
     <!--  지도  -->
     <div class="flex-1 h-[1080px]">
-        <MyNaverMap />
+        <MyNaverMap stayList={stayList}/>
     </div>
 </div>
 
 <div class="-mt-[6rem]">
-    <Footer />
+    <Footer/>
 </div>

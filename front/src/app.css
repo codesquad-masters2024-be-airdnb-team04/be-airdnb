@@ -206,6 +206,10 @@
     .overlay {
         @apply fixed top-0 left-0 -translate-x-[16%] -translate-y-[16%] w-screen h-screen z-[97]
     }
+
+    .overlay-dark {
+        @apply fixed top-0 left-0 bg-gray-900/30 w-screen h-screen z-[97]
+    }
 }
 
 @tailwind utilities;

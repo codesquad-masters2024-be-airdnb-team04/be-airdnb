@@ -6,6 +6,7 @@ import com.airdnb.clone.domain.oauth2.JwtTokenService;
 import com.airdnb.clone.global.security.filter.JwtTokenGeneratorFilter;
 import com.airdnb.clone.global.security.filter.JwtTokenValidatorFilter;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

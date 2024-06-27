@@ -24,6 +24,7 @@
 	"dependencies": {
 		"@anoram/leaflet-svelte": "^0.0.7-1",
 		"@svelte-plugins/datepicker": "^1.0.9",
+		"axios": "^1.7.2",
 		"date-fns": "^3.6.0",
 		"svelte-naver-maps": "^0.0.7",
 		"svelte-range-slider-pips": "^2.3.1"

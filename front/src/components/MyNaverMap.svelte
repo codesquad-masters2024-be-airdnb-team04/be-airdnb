@@ -2,6 +2,8 @@
     import { onDestroy } from "svelte";
     import { NaverMap, createMapScript, NaverMarker, NaverMarkerCluster } from "svelte-naver-maps";
 
+    export let stayList
+
     createMapScript({ clientId: "g8ulnqaykq" });
 
     let map;
@@ -27,6 +29,9 @@
 
 <NaverMap mapOptions={mapOptions} bind:this={map}>
     <NaverMarkerCluster>
-        <NaverMarker latitude={37.490776} longitude={127.033480} />
+        <NaverMarker latitude={37.490776} longitude={127.033480}/>
+        {#each stayList as stay}
+            <NaverMarker latitude={stay.latitude} longitude={stay.longitude} />
+        {/each}
     </NaverMarkerCluster>
 </NaverMap>

@@ -1,8 +1,19 @@
 <script>
-    import { format } from 'date-fns';
-    import { DatePicker } from "@svelte-plugins/datepicker";
-    import GuestsSelectPopup from "./GuestsSelectPopup.svelte";
-    import RateRangePopup from "./RateRangePopup.svelte";
+    import { filters } from '../store/filter.js'
+    import { format } from 'date-fns'
+    import { DatePicker } from "@svelte-plugins/datepicker"
+    import GuestsSelectPopup from "./GuestsSelectPopup.svelte"
+    import RateRangePopup from "./RateRangePopup.svelte"
+
+    function accessToGeo (position) {
+        filters.updateCurrentGeo(position.coords.latitude, position.coords.longitude)
+    }
+
+    function askForLocation () {
+        navigator.geolocation.getCurrentPosition(accessToGeo)
+    }
+
+    askForLocation();
 
     // unused
     $: searchLocation = ''
@@ -12,11 +23,10 @@
 
     /* DatePicker 관련 */
     let dateFormat = 'M월 d일';
-    let onDatePickerPopup = false;
+    let isOpen = false;
     $: checkIn = ''
     $: checkOut = ''
-    $: rateRange = [0, 0]
-    const dowLabels = ["일", "월", "화", "수", "목", "금", "토"];
+    const dowLabels = ["일", "월", "화", "수", "목", "금", "토"]
     const monthLabels = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"]
 
     const onClickClearCheckIn = () => {
@@ -27,21 +37,30 @@
         checkOut = ''
     }
 
-    const toggleDatePicker = () => {
-        onDatePickerPopup = !onDatePickerPopup;
-        console.log('toggle', onDatePickerPopup);
+    const handleDayClick = () => {
+        let changedCheckIn = checkIn !== null ? format(new Date(checkIn), 'yyyy-MM-dd') : '';
+        let changedCheckOut = checkOut !== null ? format(new Date(checkOut), 'yyyy-MM-dd') : '';
+        console.log('checkIn', changedCheckIn)
+        console.log('checkOut', changedCheckOut)
+        filters.updateCheckInOut(changedCheckIn, changedCheckOut)
     }
 
-    const formatDate = (dateString) => dateString && format(new Date(dateString), dateFormat) || '';
+    const toggleDatePicker = () => {
+        isOpen = !isOpen
+        console.log('isOpen', isOpen)
+    }
 
-    let formattedCheckIn = '';
-    let formattedCheckOut = '';
+    const formatDate = (dateString) => dateString && format(new Date(dateString), dateFormat) || ''
 
-    $: formattedCheckIn = formatDate(checkIn);
-    $: formattedCheckOut = formatDate(checkOut);
+    let formattedCheckIn = ''
+    let formattedCheckOut = ''
+
+    $: formattedCheckIn = formatDate(checkIn)
+    $: formattedCheckOut = formatDate(checkOut)
 
     /* 요금 범위 관련 */
-    let onRatePopup = false;
+    let onRatePopup = false
+    let rateRange = [0, 0]
 
     const onRatePopupClick = () => {
         onRatePopup = !onRatePopup
@@ -49,10 +68,16 @@
 
     const onClickClearRate = () => {
         rateRange = [0, 0]
+        filters.resetRateRange()
+    }
+
+    const handleUpdateRateRange = (e) => {
+        rateRange = e.detail.rateRange
+        filters.updateRateRange(rateRange)
     }
 
     /* 여행자 수 선택 관련 */
-    let onGuestsPopup = false;
+    let onGuestsPopup = false
 
     $: totalGuests = 0
     $: totalBabies = 0
@@ -64,25 +89,32 @@
     const onClickClearGuests = () => {
         totalGuests = 0
         totalBabies = 0
+        filters.resetTraveler()
     }
 
-    const handleUpdate = (e) => {
-        totalGuests = e.detail.guestCount;
-        totalBabies = e.detail.babyCount;
+    const handleUpdateGuests = (e) => {
+        totalGuests = e.detail.guestCount
+        totalBabies = e.detail.babyCount
+        filters.updateTraveler(totalGuests + totalBabies)
     }
 
     // 팝업창 닫기
     const closeRatePopup = () => {
-        onRatePopup = false;
+        onRatePopup = false
         console.log('onRatePopup', onRatePopup)
     }
 
     const closeGuestsPopup = () => {
-        onGuestsPopup = false;
+        onGuestsPopup = false
         console.log('onGuestsPopup', onGuestsPopup)
     }
+
+    function onClickSearch() {
+        filters.searchWithCondition()
+    }
 </script>
-<div class="flex gap-1 my-3 w-[860px] h-[82px] border border-gray-200 bg-white rounded-full mx-auto items-center animate-fade-down animate-duration-300" style="z-index: 98;" data-panel-bounds="true">
+<div class="flex gap-1 my-3 w-[860px] h-[82px] border border-gray-200 bg-white rounded-full mx-auto items-center animate-fade-down animate-duration-300"
+     style="z-index: 98;" data-panel-bounds="true">
 
     <!--            <div class="flex gap-6 justify-between items-center py-5 pl-10 pr-4 rounded-full border hover:bg-gray-200">-->
     <!--                <label for="bigsearch-query-location-input" class="flex flex-col justify-center items-start">-->
@@ -102,13 +134,15 @@
     <!--                </button>-->
     <!--            </div>-->
     <div class="flex gap-1 items-center relative">
-        {#if onDatePickerPopup}
-            <div class="absolute -bottom-[12px] animate-slidein">
-                <DatePicker theme="custom-datepicker" isOpen={true} bind:startDate={checkIn} bind:endDate={checkOut} dowLabels={dowLabels} monthLabels={monthLabels} isRange isMultipane enableFutureDates enablePastDates={false} showYearControls={false}></DatePicker>
-            </div>
-        {/if}
-        <div class="relative w-[150px] h-[81px] flex gap-6 justify-between items-center rounded-full py-5 pl-8 pr-5 whitespace-nowrap hover:bg-gray-200/60" role="button" tabindex="0" aria-expanded="true"
-             on:click={toggleDatePicker}>
+        <div class="absolute -bottom-[12px] animate-slidein">
+            <DatePicker theme="custom-datepicker" bind:isOpen bind:startDate={checkIn} bind:endDate={checkOut}
+                        dowLabels={dowLabels} monthLabels={monthLabels} isRange isMultipane enableFutureDates
+                        enablePastDates={false} showYearControls={false} onDayClick={handleDayClick} >
+            </DatePicker>
+        </div>
+        <div class="relative w-[150px] h-[81px] flex gap-6 justify-between items-center rounded-full py-5 pl-8 pr-5 whitespace-nowrap hover:bg-gray-200/60"
+             role="button" tabindex="0" aria-expanded="true"
+             on:click={(e) => {toggleDatePicker(); e.stopPropagation();}}>
             <div type="button" class="flex flex-col">
                 <div class="text-[12px]">
                     체크인
@@ -119,18 +153,24 @@
                     <div class="text-[14px] text-gray-400">날짜 추가</div>
                 {/if}
             </div>
-            <button type="button" aria-label="입력 내용 지우기" on:click={onClickClearCheckIn} class="clearBtn absolute right-3"
+            <button type="button" aria-label="입력 내용 지우기" on:click={(e) => {onClickClearCheckIn(); e.stopPropagation();}}
+                    class="clearBtn absolute right-3"
                     class:visible={checkIn} class:invisible={!checkIn}>
                         <span>
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="none"/>
-                                <path d="M15 9L9 15" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M9 9L15 15" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                      fill="none"/>
+                                <path d="M15 9L9 15" stroke="#333333" stroke-width="2" stroke-linecap="round"
+                                      stroke-linejoin="round"/>
+                                <path d="M9 9L15 15" stroke="#333333" stroke-width="2" stroke-linecap="round"
+                                      stroke-linejoin="round"/>
                             </svg>
                         </span>
             </button>
         </div>
-        <div class="relative w-[150px] h-[81px] flex gap-6 justify-between items-center rounded-full py-5 pl-8 pr-5 whitespace-nowrap hover:bg-gray-200/60" role="button" tabindex="0" aria-expanded="false"
+        <div class="relative w-[150px] h-[81px] flex gap-6 justify-between items-center rounded-full py-5 pl-8 pr-5 whitespace-nowrap hover:bg-gray-200/60"
+             role="button" tabindex="0" aria-expanded="false"
              on:click={toggleDatePicker}>
             <div type="button" class="flex flex-col">
                 <div class="text-[12px]">
@@ -142,13 +182,18 @@
                     <div class="text-[14px] text-gray-400">날짜 추가</div>
                 {/if}
             </div>
-            <button type="button" aria-label="입력 내용 지우기" on:click={onClickClearCheckOut} class="clearBtn absolute right-3"
+            <button type="button" aria-label="입력 내용 지우기" on:click={(e) => {onClickClearCheckOut(); e.stopPropagation();}}
+                    class="clearBtn absolute right-3"
                     class:visible={checkOut} class:invisible={!checkOut}>
                         <span>
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="none"/>
-                                <path d="M15 9L9 15" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M9 9L15 15" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                      fill="none"/>
+                                <path d="M15 9L9 15" stroke="#333333" stroke-width="2" stroke-linecap="round"
+                                      stroke-linejoin="round"/>
+                                <path d="M9 9L15 15" stroke="#333333" stroke-width="2" stroke-linecap="round"
+                                      stroke-linejoin="round"/>
                             </svg>
                         </span>
             </button>
@@ -157,37 +202,44 @@
 
     <div class="h-16 border-l border-gray-200"></div>
 
-    <div class="relative w-[220px] h-[81px] flex gap-6 justify-between items-center rounded-full py-5 pl-8 pr-5 whitespace-nowrap hover:bg-gray-200/60" role="button"
+    <div class="relative w-[220px] h-[81px] flex gap-6 justify-between items-center rounded-full py-5 pl-8 pr-5 whitespace-nowrap hover:bg-gray-200/60"
+         role="button"
          on:click={onRatePopupClick}>
         <div class="flex flex-col">
             <div class="text-[12px]">
                 요금
             </div>
-            {#if rateRange[0] !== 0 || rateRange[0] !== 0}
-                <div class="text-[14px]">{rateRange[0]} ~ {rateRange[1]}</div>
+            {#if rateRange[0] !== 0 || rateRange[1] !== 0}
+                <div class="text-[14px]">₩{rateRange[0].toLocaleString('ko-KR')} ~ ₩{rateRange[1].toLocaleString('ko-KR')}</div>
             {:else}
                 <div class="text-[14px] text-gray-400">금액대 설정</div>
             {/if}
         </div>
-        <button type="button" aria-label="입력 내용 지우기" on:click={onClickClearRate} class="clearBtn absolute right-3"
-                class:visible={rateRange[0] !== 0 || rateRange[1] !== 0} class:invisible={rateRange[0] === 0 && rateRange[1] === 0}>
+        <button type="button" aria-label="입력 내용 지우기" on:click={(e) => {onClickClearRate(); e.stopPropagation();} } class="clearBtn absolute right-3"
+                class:visible={rateRange[0] !== 0 || rateRange[1] !== 0}
+                class:invisible={rateRange[0] === 0 && rateRange[1] === 0}>
                         <span>
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="none"/>
-                                <path d="M15 9L9 15" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M9 9L15 15" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                      fill="none"/>
+                                <path d="M15 9L9 15" stroke="#333333" stroke-width="2" stroke-linecap="round"
+                                      stroke-linejoin="round"/>
+                                <path d="M9 9L15 15" stroke="#333333" stroke-width="2" stroke-linecap="round"
+                                      stroke-linejoin="round"/>
                             </svg>
                         </span>
         </button>
         {#if onRatePopup}
             <div class="overlay" on:click={(e) => {closeRatePopup(); e.stopPropagation();}}></div>
-            <RateRangePopup bind:rateRange={rateRange} />
+            <RateRangePopup on:update={handleUpdateRateRange}/>
         {/if}
     </div>
 
     <div class="h-16 border-l border-gray-200"></div>
 
-    <div class="relative min-w-[326px] max-w-[326px] h-[81px] flex gap-6 justify-between items-center rounded-full py-5 pl-8 pr-5 whitespace-nowrap hover:bg-gray-200/60" role="button"
+    <div class="relative min-w-[326px] max-w-[326px] h-[81px] flex gap-6 justify-between items-center rounded-full py-5 pl-8 pr-5 whitespace-nowrap hover:bg-gray-200/60"
+         role="button"
          on:click={onGuestsPopupClick}>
         <div class="flex flex-col">
             <div class="text-[12px]">
@@ -201,26 +253,33 @@
                 <div class="text-[14px] text-gray-400">게스트 추가</div>
             {/if}
         </div>
-        <button type="button" aria-label="입력 내용 지우기" on:click={onClickClearGuests} class="clearBtn absolute right-[140px] z-[30]"
+        <button type="button" aria-label="입력 내용 지우기" on:click={onClickClearGuests}
+                class="clearBtn absolute right-[140px] z-[30]"
                 class:visible={totalGuests !== 0} class:invisible={totalGuests === 0}>
             <span>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="none"/>
-                    <path d="M15 9L9 15" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M9 9L15 15" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                          fill="none"/>
+                    <path d="M15 9L9 15" stroke="#333333" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                    <path d="M9 9L15 15" stroke="#333333" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round"/>
                 </svg>
             </span>
         </button>
         {#if onGuestsPopup}
             <div class="overlay" on:click={(e) => {closeGuestsPopup(); e.stopPropagation();}}></div>
-            <GuestsSelectPopup on:update={handleUpdate} />
+            <GuestsSelectPopup on:update={handleUpdateGuests}/>
         {/if}
-        <button type="button" class="absolute right-[10px] z-[20] flex gap-2 pl-3 pr-5 py-3 justify-between items-center rounded-full bg-primary hover:bg-pink-700/85 active:transition-all active:scale-[0.98] active:duration-75"
-                on:click|stopPropagation>
+        <button type="button"
+                class="absolute right-[10px] z-[20] flex gap-2 pl-3 pr-5 py-3 justify-between items-center rounded-full bg-primary hover:bg-pink-700/85 active:transition-all active:scale-[0.98] active:duration-75"
+                on:click={(e) => {onClickSearch(); e.stopPropagation();}}>
             <span>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M21 21L16.65 16.65" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z"
+                          stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 21L16.65 16.65" stroke="#ffffff" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round"/>
                 </svg>
             </span>
             <span class="text-white">

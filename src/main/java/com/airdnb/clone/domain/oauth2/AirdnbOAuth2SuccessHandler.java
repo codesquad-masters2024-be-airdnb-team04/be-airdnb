@@ -80,7 +80,7 @@ public class AirdnbOAuth2SuccessHandler implements AuthenticationSuccessHandler 
     private Cookie createJwtCookie(String cookieKey, String jwt) {
         Cookie cookie = new Cookie(cookieKey, jwt);
         cookie.setPath("/");
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setHttpOnly(false); // FIXME: 개발 중에만 사용
         cookie.setMaxAge(COOKIE_EXPIRATION_TIME);
 

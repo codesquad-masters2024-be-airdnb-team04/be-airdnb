@@ -1,7 +1,10 @@
 <script>
     import { createEventDispatcher, onDestroy, onMount } from "svelte";
+    import { get } from "svelte/store";
+    import { filters } from "../store/filter.js";
     import RangeSlider from "svelte-range-slider-pips"
-    export let rateRange
+
+    const dispatch = createEventDispatcher();
 
     const currency = new Intl.NumberFormat("ko", {
         style: 'currency',
@@ -10,21 +13,17 @@
     const formatter = (value) => currency.format(value);
 
     //TODO: 필터 스토어로 연결 필요
-    $: sliderRange = [10000, 1000000]
-    $: if (sliderRange[0] > sliderRange[1]) {
-        sliderRange[1] = sliderRange[0]
-    }
+    $: sliderRange = get(filters).rateRange
 
     function updateSliderRange(index, e) {
         console.log(e.target)
         console.log(e.target.value)
 
         const parsedValue = parseInt(e.target.value);
-        console.log('parsedValue', parsedValue)
 
         if (!isNaN(parsedValue)) {
             sliderRange[index] = parsedValue
-            console.log('range', sliderRange)
+            filters.updateRateRange(sliderRange)
         }
     }
 
@@ -32,15 +31,22 @@
 
     onMount(() => {
         document.addEventListener('click', handleClickOutside, true);
+        sliderRange = get(filters).rateRange
     });
 
     onDestroy(() => {
         document.removeEventListener('click', handleClickOutside, true);
+        sliderRange[0] = parseInt(sliderRange[0])
+        sliderRange[1] = parseInt(sliderRange[1])
+        filters.updateRateRange(sliderRange)
+        dispatch('update', {
+            rateRange: sliderRange
+        })
     });
 
     function handleClickOutside(event) {
         if (popupRef && !popupRef.contains(event.target)) {
-            console.log(popupRef)
+            console.log('popupRef', popupRef)
             dispatch('onRatePopupClick');
         }
     }

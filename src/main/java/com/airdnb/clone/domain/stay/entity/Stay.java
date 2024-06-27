@@ -179,7 +179,14 @@ public class Stay extends BaseTimeEntity {
         OPEN, REPAIR, CLOSED
     }
 
+    @Getter
     public enum Type {
-        APARTMENT, ONE_ROOM, TWO_ROOM, HOSTEL, GUEST_HOUSE, COUNTRY_SIDE
+        APARTMENT("아파트"), ONE_ROOM("원룸"), TWO_ROOM("투룸"), HOSTEL("호스텔"), GUEST_HOUSE("게스트 하우스"), COUNTRY_SIDE("전원주택");
+
+        private final String name;
+
+        Type(String name) {
+            this.name = name;
+        }
     }
 }
