@@ -27,10 +27,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-@Table(name = "BOOKING",
-uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"STAY_ID", "CHECK_IN", "CHECK_OUT"})}
-)
+@Table(name = "BOOKING", uniqueConstraints = {
+        @UniqueConstraint(name = "UNIQUE_STAY_CHECKIN_CHECKOUT", columnNames = {"STAY_ID", "CHECK_IN", "CHECK_OUT"})
+})
 @Entity
 public class Booking extends BaseTimeEntity {
 
