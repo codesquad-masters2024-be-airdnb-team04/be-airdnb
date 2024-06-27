@@ -15,6 +15,7 @@ import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -34,7 +35,7 @@ import org.locationtech.jts.geom.Point;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-@Table(name = "STAY")
+@Table(name = "STAY", indexes = {@Index(name = "IDX_POINT", columnList = "POINT")})
 @Entity
 public class Stay extends BaseTimeEntity {
 
@@ -47,7 +48,7 @@ public class Stay extends BaseTimeEntity {
     @JoinColumn(name = "HOST_ID", foreignKey = @ForeignKey(name = "FK_MEMBER_STAY_ID"))
     private Member host;
 
-    @Column(name = "POINT", columnDefinition = "POINT SRID 4326")
+    @Column(name = "POINT", columnDefinition = "POINT SRID 4326", nullable = false)
     private Point point;
 
     @Column(name = "ALIAS")
