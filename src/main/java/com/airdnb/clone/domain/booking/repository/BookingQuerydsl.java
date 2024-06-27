@@ -13,6 +13,6 @@ public interface BookingQuerydsl {
     List<Stay> findAvailableStays(LocalDate checkInDate, LocalDate checkOutDate, Integer minPrice, Integer maxPrice,
                                   Integer guestCount);
 
-    Slice<StayDetailResponse> findAvailableStaysByCursor(LocalDate checkInDate, LocalDate checkOutDate, Integer minPrice, Integer maxPrice, Integer guestCount, Long cursorId, Pageable pageable);
-    Page<StayDetailResponse> findAvailableStaysByOffset(LocalDate checkInDate, LocalDate checkOutDate, Integer minPrice, Integer maxPrice, Integer guestCount, Pageable pageable);
+    Slice<StayDetailResponse> findAvailableStaysByCursor(LocalDate checkInDate, LocalDate checkOutDate, Integer minPrice, Integer maxPrice, Integer guestCount, Double latitude, Double longitude, Integer radius, Long cursorId, Pageable pageable);
+    Page<StayDetailResponse> findAvailableStaysByOffset(LocalDate checkInDate, LocalDate checkOutDate, Integer minPrice, Integer maxPrice, Integer guestCount, Double latitude, Double longitude, Integer radius, Pageable pageable);
 }

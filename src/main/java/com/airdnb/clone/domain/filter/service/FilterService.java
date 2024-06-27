@@ -21,17 +21,19 @@ public class FilterService {
 
     public Slice<StayDetailResponse> getAvailableStaysByCursor(LocalDate checkInDate, LocalDate checkOutDate,
                                                                Integer minPrice, Integer maxPrice, Integer guestCount,
+                                                               Double latitude, Double longitude, Integer radius,
                                                                Long cursorId, Pageable pageable) {
 
-        return bookingRepository.findAvailableStaysByCursor(checkInDate,
-                checkOutDate, minPrice, maxPrice, guestCount, cursorId, pageable);
+        return bookingRepository.findAvailableStaysByCursor(checkInDate, checkOutDate, minPrice, maxPrice, guestCount,
+                latitude, longitude, radius, cursorId, pageable);
     }
 
     public Page<StayDetailResponse> getAvailableStaysByOffset(LocalDate checkInDate, LocalDate checkOutDate,
                                                               Integer minPrice, Integer maxPrice, Integer guestCount,
+                                                              Double latitude, Double longitude, Integer radius,
                                                               Pageable pageable) {
 
         return bookingRepository.findAvailableStaysByOffset(checkInDate,
-                checkOutDate, minPrice, maxPrice, guestCount, pageable);
+                checkOutDate, minPrice, maxPrice, guestCount, latitude, longitude, radius, pageable);
     }
 }

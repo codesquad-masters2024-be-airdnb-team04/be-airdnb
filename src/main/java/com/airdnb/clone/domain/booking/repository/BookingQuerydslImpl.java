@@ -6,6 +6,7 @@ import static com.airdnb.clone.domain.stay.entity.QStay.stay;
 import com.airdnb.clone.domain.stay.controller.dto.response.StayDetailResponse;
 import com.airdnb.clone.domain.stay.entity.Stay;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.BooleanTemplate;
 import com.querydsl.core.types.dsl.DateTemplate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.TimeTemplate;
@@ -41,26 +42,25 @@ public class BookingQuerydslImpl implements BookingQuerydsl {
     }
 
     @Override
-    public Slice<StayDetailResponse> findAvailableStaysByCursor(LocalDate checkInDate, LocalDate checkOutDate, Integer minPrice,
-                                                                Integer maxPrice, Integer guestCount, Long cursorId, Pageable pageable) {
+    public Slice<StayDetailResponse> findAvailableStaysByCursor(LocalDate checkInDate, LocalDate checkOutDate,
+                                                                Integer minPrice, Integer maxPrice, Integer guestCount,
+                                                                Double latitude, Double longitude, Integer radius,
+                                                                Long cursorId, Pageable pageable) {
         List<Stay> stays = jpaQueryFactory
                 .select(stay)
                 .from(booking)
-                .rightJoin(stay)
-                .on(booking.stay.id.eq(stay.id).and(matchesCheckInAndCheckOut(checkInDate, checkOutDate)))
+                .rightJoin(booking.stay, stay)
+                .on(matchesCheckInAndCheckOut(checkInDate, checkOutDate).and(
+                        getPointBooleanExpression(latitude, longitude, radius)))
                 .where(
                         cursorId(cursorId),
                         matchesTotalPrice(minPrice, maxPrice),
                         matchesGuestCount(guestCount),
-                        booking.id.isNull())
+                        booking.id.isNull()
+                )
                 .limit(pageable.getPageSize() + 1) // Cursor 기반 페이징에서만 사용
                 .orderBy(stay.id.asc())
                 .fetch();
-
-        /* DTO 변환 -> @QueryProjection 고려하기 */
-        List<StayDetailResponse> content = stays.stream()
-                .map(StayDetailResponse::of)
-                .toList();
 
         /* Cursor Paging 에서만 사용 */
         boolean hasNext = false;
@@ -70,17 +70,32 @@ public class BookingQuerydslImpl implements BookingQuerydsl {
             hasNext = true;
         }
 
+        /* DTO 변환 -> @QueryProjection 고려하기 */
+        List<StayDetailResponse> content = stays.stream()
+                .map(StayDetailResponse::of)
+                .toList();
+
         return new SliceImpl<>(content, pageable, hasNext);
     }
 
+    private BooleanTemplate getPointBooleanExpression(Double latitude, Double longitude, Integer radius) {
+        String point = "Point(%f %f)".formatted(latitude, longitude);
+        String contains = "ST_CONTAINS(ST_BUFFER(ST_GeomFromText('%s', 4326), {0}), point)";
+        String containsExp = String.format(contains, point);
+        return Expressions.booleanTemplate(containsExp, radius);
+    }
+
     @Override
-    public Page<StayDetailResponse> findAvailableStaysByOffset(LocalDate checkInDate, LocalDate checkOutDate, Integer minPrice,
-                                                               Integer maxPrice, Integer guestCount, Pageable pageable) {
+    public Page<StayDetailResponse> findAvailableStaysByOffset(LocalDate checkInDate, LocalDate checkOutDate,
+                                                               Integer minPrice, Integer maxPrice, Integer guestCount,
+                                                               Double latitude, Double longitude, Integer radius,
+                                                               Pageable pageable) {
         List<Stay> stays = jpaQueryFactory
                 .select(stay)
                 .from(booking)
-                .rightJoin(stay)
-                .on(booking.stay.id.eq(stay.id).and(matchesCheckInAndCheckOut(checkInDate, checkOutDate)))
+                .rightJoin(booking.stay, stay)
+                .on(matchesCheckInAndCheckOut(checkInDate, checkOutDate).and(
+                        getPointBooleanExpression(latitude, longitude, radius)))
                 .where(
                         matchesTotalPrice(minPrice, maxPrice),
                         matchesGuestCount(guestCount),
@@ -156,13 +171,13 @@ public class BookingQuerydslImpl implements BookingQuerydsl {
         TimeTemplate<LocalTime> bookedCheckOutTime = Expressions.timeTemplate(LocalTime.class,
                 "CAST({0} AS TIME)", booking.checkOut);
 
-        return bookedCheckInDate.lt(checkOutDate)
-                .or(bookedCheckInDate.eq(checkOutDate).and(bookedCheckInTime.lt(booking.stay.checkOutTime)))
-                .and(bookedCheckOutDate.gt(checkInDate)
-                        .or(bookedCheckOutDate.eq(checkInDate).and(bookedCheckOutTime.gt(booking.stay.checkInTime))));
+        return bookedCheckInDate.lt(checkOutDate).or(bookedCheckInDate.eq(checkOutDate)
+                        .and(bookedCheckInTime.lt(stay.checkOutTime))) // 예약된 '입실 시간' 이전에 '요청 퇴실 날짜' = 누가 입실하기 전 퇴실하겠다는 뜻
+                .and(bookedCheckOutDate.gt(checkInDate).or(bookedCheckOutDate.eq(checkInDate).and(bookedCheckOutTime.gt(
+                        stay.checkInTime)))); // '요청 입실 시간' 이후에 예약된 '퇴실 시간'이 잡혀 있으면 = 누가 퇴실한 다음 입실하겠다는 뜻
     }
 
-    private BooleanExpression cursorId(Long cursorId){
+    private BooleanExpression cursorId(Long cursorId) {
         return cursorId == null ? null : stay.id.gt(cursorId);
     }
 }
