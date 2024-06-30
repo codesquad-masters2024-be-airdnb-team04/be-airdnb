@@ -3,6 +3,8 @@
     import { DatePicker } from "@svelte-plugins/datepicker";
     import GuestsSelectPopup from "./GuestsSelectPopup.svelte";
     import RateRangePopup from "./RateRangePopup.svelte";
+    import { filters } from "../store/filter.js";
+    import {onMount} from "svelte";
 
     // unused
     $: searchLocation = ''
@@ -15,7 +17,6 @@
     let onDatePickerPopup = false;
     $: checkIn = ''
     $: checkOut = ''
-    $: rateRange = [0, 0]
     const dowLabels = ["일", "월", "화", "수", "목", "금", "토"];
     const monthLabels = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"]
 
@@ -32,6 +33,12 @@
         console.log('toggle', onDatePickerPopup);
     }
 
+    const getDayDiff = (start, end) => {
+      start = new Date(start)
+      end = new Date(end)
+      return (end - start) / (1000 * 3600 * 24);
+    }
+
     const formatDate = (dateString) => dateString && format(new Date(dateString), dateFormat) || '';
 
     let formattedCheckIn = '';
@@ -42,6 +49,8 @@
 
     /* 요금 범위 관련 */
     let onRatePopup = false;
+    let rateRange = [0, 0]
+    $: rateRange = rateRange
 
     const onRatePopupClick = () => {
         onRatePopup = !onRatePopup
@@ -49,6 +58,12 @@
 
     const onClickClearRate = () => {
         rateRange = [0, 0]
+        filters.resetRateRange()
+    }
+
+    const handleUpdateRateRange = (e) => {
+      rateRange = e.detail.rateRange
+      filters.updateRateRange(rateRange)
     }
 
     /* 여행자 수 선택 관련 */
@@ -66,21 +81,31 @@
         totalBabies = 0
     }
 
-    const handleUpdate = (e) => {
-        totalGuests = e.detail.guestCount;
-        totalBabies = e.detail.babyCount;
+    const handleUpdateGuests = (e) => {
+      totalGuests = e.detail.guestCount
+      totalBabies = e.detail.babyCount
+      filters.updateTraveler(totalGuests + totalBabies)
     }
 
     // 팝업창 닫기
     const closeRatePopup = () => {
         onRatePopup = false;
-        console.log('gg', onRatePopup)
     }
 
     const closeGuestsPopup = () => {
         onGuestsPopup = false;
-        console.log('zz', onGuestsPopup)
     }
+
+    function onClickSearch() {
+      filters.searchWithCondition()
+    }
+
+    onMount(() => {
+      checkIn = $filters.checkIn
+      checkOut = $filters.checkOut
+      rateRange = $filters.rateRange
+      totalGuests = $filters.traveler
+    })
 </script>
 
 <div class="flex w-[416px] h-[44px] border border-gray-200 bg-white rounded-full mx-auto items-center animate-jump-in animate-duration-[350ms]" style="z-index: 98;" data-panel-bounds="true">
@@ -94,7 +119,7 @@
              on:click={toggleDatePicker}>
             <div type="button" class="flex flex-col justify-center">
                 {#if checkIn}
-                    <div class="text-[14px]">{formattedCheckIn}</div>
+                    <div class="text-[14px]">{getDayDiff(checkIn, checkOut)}일</div>
                 {:else}
                     <div class="text-[14px] text-gray-400">일정 입력</div>
                 {/if}
@@ -117,13 +142,13 @@
     <div class="relative w-[140px] flex gap-6 justify-center items-center rounded-full py-3.5 pl-2 pr-2 whitespace-nowrap hover:bg-gray-200/60" role="button"
          on:click={onRatePopupClick}>
         <div class="flex flex-col">
-            {#if rateRange[0] !== 0 || rateRange[0] !== 0}
-                <div class="text-[14px]">{rateRange[0]} ~ {rateRange[1]}</div>
+            {#if rateRange[0] !== 0 || rateRange[1] !== 0}
+                <div class="text-[14px]">₩{rateRange[0].toLocaleString('ko-KR')}부터</div>
             {:else}
                 <div class="text-[14px] text-gray-400">금액대 입력</div>
             {/if}
         </div>
-        <button type="button" aria-label="입력 내용 지우기" on:click={onClickClearRate} class="clearBtn absolute right-3"
+        <button type="button" aria-label="입력 내용 지우기" on:click={(e) => {onClickClearRate(); e.stopPropagation();}} class="clearBtn absolute right-3"
                 class:visible={rateRange[0] !== 0 || rateRange[1] !== 0} class:invisible={rateRange[0] === 0 && rateRange[1] === 0}>
                         <span>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -134,8 +159,8 @@
                         </span>
         </button>
         {#if onRatePopup}
-            <div class="overlay"></div>
-            <RateRangePopup bind:rateRange={rateRange} />
+            <div class="overlay" on:click={(e) => {closeRatePopup(); e.stopPropagation();}}></div>
+            <RateRangePopup  on:update={handleUpdateRateRange}/>
         {/if}
     </div>
 
@@ -163,11 +188,11 @@
             </span>
         </button>
         {#if onGuestsPopup}
-            <div class="overlay"></div>
-            <GuestsSelectPopup on:update={handleUpdate} />
+            <div class="overlay" on:click={(e) => {closeGuestsPopup(); e.stopPropagation();}}></div>
+            <GuestsSelectPopup on:update={handleUpdateGuests} />
         {/if}
         <button id="search-mini" type="button" class="absolute right-[10px] z-[20] flex gap-2 px-2 py-2 justify-center items-center rounded-full bg-primary hover:bg-pink-700/85 active:transition-all active:scale-[0.98] active:duration-75"
-                on:click|stopPropagation>
+                on:click={(e) => {onClickSearch(); e.stopPropagation();}}>
             <label for="search-mini" class="pointer-events-none">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

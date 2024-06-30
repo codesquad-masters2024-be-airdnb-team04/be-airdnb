@@ -215,7 +215,7 @@
                 <div class="text-[14px] text-gray-400">금액대 설정</div>
             {/if}
         </div>
-        <button type="button" aria-label="입력 내용 지우기" on:click={(e) => {onClickClearRate(); e.stopPropagation();} } class="clearBtn absolute right-3"
+        <button type="button" aria-label="입력 내용 지우기" on:click={(e) => {onClickClearRate(); e.stopPropagation();}} class="clearBtn absolute right-3"
                 class:visible={rateRange[0] !== 0 || rateRange[1] !== 0}
                 class:invisible={rateRange[0] === 0 && rateRange[1] === 0}>
                         <span>

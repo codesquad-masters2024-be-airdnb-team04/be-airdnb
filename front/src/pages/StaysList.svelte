@@ -15,11 +15,11 @@
   let modalStatus = false;
 
   /* 스크롤 정보 */
+  let component = document.getElementById('stayItem')
   let element
-  let component = document.querySelector('#item');
   $: { // 반응형 기호 사용 => 스크롤할 때, 브라우저 크기가 변할 때마다 돔의 높이 정보, 스크롤 위치가 변하기 때문
     if (component) {
-      element = component
+      element = document.getElementById('stayItem').parentNode
       element.addEventListener('scroll', onScroll)
       element.addEventListener('resize', onScroll)
     }
@@ -52,10 +52,11 @@
     }
 
     if (scrollTrigger()) {
-      const lastButtonChild = document.querySelector('#item button:last-child');
-      console.log('gogogogogo', lastButtonChild.id)
-      if (lastButtonChild) {
-        currentStaysPage.increPage(lastButtonChild.id);
+      const stayItemElement = document.getElementById('stayItem');
+      let buttons = stayItemElement.getElementsByTagName('button');
+      let lastButton = buttons[buttons.length - 1];
+      if (lastButton) {
+        currentStaysPage.increPage(lastButton.id);
       }
     }
   }
@@ -75,20 +76,7 @@
     }
     stayList = get(stays).stayList;
     console.log('stayList:', stayList)
-
-    // 스크롤 이벤트 핸들러를 추가합니다.
-    component = document.querySelector('#item');
-    if (component) {
-      component.addEventListener('scroll', onScroll);
-    }
   })
-
-  // 컴포넌트가 언마운트될 때 이벤트 핸들러를 제거합니다.
-  onDestroy(() => {
-    if (component) {
-      component.removeEventListener('scroll', onScroll);
-    }
-  });
 </script>
 
 <Header scrollMode={false}/>
@@ -116,7 +104,7 @@
             </div>
 
             <!--  숙소 리스트 -->
-            <div id="item" on:scroll={onScroll} class="flex flex-col gap-2 max-h-[1000px] items-start justify-start pt-2 space-y-3 overflow-y-scroll">
+            <div id="stayItem" bind:this={component} on:scroll={onScroll} class="flex flex-col gap-2 max-h-[1000px] items-start justify-start pt-2 space-y-3 overflow-y-scroll">
 
                 {#if stayList.length !== 0}
                     {#each stayList as stay}
